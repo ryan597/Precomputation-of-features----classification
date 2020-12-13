@@ -1,4 +1,4 @@
 data/**
 out/**
-*.png
-*.jpg
+images/**
+notebook_out/**
