@@ -1,0 +1,20 @@
+{
+  "model"           : "xception",
+  "weights"         : "imagenet",
+  "include_top"     : false,
+
+  "train_path"      : "data/IR/train",
+  "test_path"       : "data/IR/test",
+  "features_path"   : "out/xception/IRfeatures_imaug.h5",
+  "labels_path"     : "out/xception/IRlabels_imaug.h5",
+  "test_features"   : "out/xception/IRtestfeatures.h5",
+  "test_labels"	    : "out/xception/IRtestlabels.h5",
+  "results"         : "out/xception/IRresults_imaug.txt",
+  "classifier_path" : "out/xception/IRclassifier_imaug.pickle",
+  "model_path"      : "out/xception/IRmodel_imaug",
+  "cm_path"         : "out/xception/IRcm_imaug.png",
+
+  "test_size"       : 0.10,
+  "seed"            : 2018,
+  "num_classes"     : 3
+}

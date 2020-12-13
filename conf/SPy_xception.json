@@ -1,0 +1,20 @@
+{
+  "model"           : "xception",
+  "weights"         : "imagenet",
+  "include_top"     : false,
+
+  "train_path"      : "data/spyflow/train",
+  "test_path"       : "data/spyflow/test",
+  "features_path"   : "out/xception/Spyfeatures.h5",
+  "labels_path"     : "out/xception/Spylabels.h5",
+  "test_features"   : "out/xception/Spytestfeatures.h5",
+  "test_labels"	    : "out/xception/Spytestlabels.h5",
+  "results"         : "out/xception/Spyresults.txt",
+  "classifier_path" : "out/xception/SPyclassifier.pickle",
+  "model_path"      : "out/xception/Spymodel",
+  "cm_path"         : "out/xception/cm_Spy.png",
+
+  "test_size"       : 0.10,
+  "seed"            : 2018,
+  "num_classes"     : 3
+}

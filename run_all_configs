@@ -1,0 +1,69 @@
+#!/bin/bash
+
+for i in conf/conf*;
+	do config=`basename -s .json $i`
+	#if [[ $config == *imaug* ]]; then
+	#	python extract_CNN_features_imaug.py -c $config
+	#else
+	#	python extract_CNN_features.py -c $config
+	#fi
+	#python train_test_model.py -c $config
+	python test.py -c $config
+done
+
+for i in conf/Flo*;
+	do config=`basename -s .json $i`
+	#if [[ $config == *imaug* ]]; then
+	#	python extract_CNN_features_imaug.py -c $config
+	#else
+	#	python extract_CNN_features.py -c $config
+	#fi
+	#python train_test_model.py -c $config
+	python test.py -c $config
+done
+
+for i in conf/IR2_*;
+	do config=`basename -s .json $i`
+	if ! [[ $config == *flo* ]]; then
+	#	if [[ $config == *imaug* ]]; then
+	#		python extract_TwoCNN_features_imaug.py -c $config
+	#	else
+	#		python extract_TwoCNN_features.py -c $config
+	#	fi
+	#	python train_test_model.py -c $config
+		python testTwo.py -c $config
+	fi
+done
+
+for i in conf/IR2_flo*;
+	do config=`basename -s .json $i`
+	#if [[ $config == *imaug* ]]; then
+	#	python extract_IR_FLOW_CNN_features_imaug.py -c $config
+	#else
+	#	python extract_IR_FLOW_CNN_features.py -c $config
+	#fi
+	#python train_test_model.py -c $config
+	python testIRFLOW.py -c $config
+done
+
+for i in conf/late_IR2_flo*;
+	do config=`basename -s .json $i`
+	#if [[ $config == *imaug* ]]; then
+	#	python extract_IR_FLOW_late_CNN_features_imaug.py -c $config
+	#else
+	#	python extract_IR_FLOW_late_CNN_features.py -c $config
+	#fi
+	#python train_test_model.py -c $config
+	python testIRFLOW_late.py -c $config
+done
+
+for i in conf/SPy*;
+    do config=`basename -s .json $i`
+    #if [[ $config == *imaug* ]]; then
+    #    python extract_CNN_features_imaug.py -c $config
+    #else
+    #    python extract_CNN_features.py -c $config
+    #fi
+    #python train_test_model.py -c $config
+    python test.py -c $config
+done
