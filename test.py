@@ -1,17 +1,3 @@
-# keras imports
-from tensorflow.python.keras.applications.vgg16 import VGG16, preprocess_input
-from tensorflow.python.keras.applications.vgg19 import VGG19, preprocess_input
-from tensorflow.python.keras.applications.xception import Xception, preprocess_input
-from tensorflow.python.keras.applications.resnet50 import ResNet50, preprocess_input
-from tensorflow.python.keras.applications.inception_resnet_v2 import InceptionResNetV2, preprocess_input
-from tensorflow.python.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
-from tensorflow.python.keras.applications.inception_v3 import InceptionV3, preprocess_input
-from tensorflow.python.keras.preprocessing import image
-from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.models import model_from_json
-from tensorflow.python.keras.layers import Input
-
-
 # other imports
 from sklearn.preprocessing import LabelEncoder
 from PIL import Image
@@ -22,242 +8,144 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 import numpy as np
 import h5py
-import os, sys, getopt
+import os
+import sys
+import getopt
 import json
 import pickle
+import argparse
 import seaborn as sns
 import matplotlib.pyplot as plt
 import glob
 
-
+import utils
 #==============================================================
 if __name__ == '__main__':
-	argv = sys.argv[1:]
-	try:
-		opts, args = getopt.getopt(argv,"h:c:")
-	except getopt.GetoptError:
-		print('python train_test_model.py -c conf_file')
-		sys.exit(2)
+    # Get command line argument for the config file
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", help="Name of the config file inside ./conf/")
+    args = parser.parse_args()
 
-	for opt, arg in opts:
-		if opt == '-h':
-			print('Example usage: python extract_features_imaug.py -c conf_mobilenet')
-			sys.exit()
-		elif opt in ("-c"):
-			configfile = arg
+    with open(os.getcwd()+os.sep+'conf'+os.sep+args.config+'.json') as f:
+        config = json.load(f)
 
-	# load the user configs
-	with open(os.getcwd()+os.sep+'conf'+os.sep+configfile+'.json') as f:
-		config = json.load(f)
+    # config variables
+    model_name = config["model"]
+    weights = config["weights"]
+    include_top = config["include_top"]
+    test_path = config["test_path"]
+    test_features_path = config["test_features_path"]
+    test_labels_path = config["test_labels_path"]
+    results = config["results"]
+    classifier_path = config["classifier_path"]
+    cm_path = config["cm_path"]
+    model_path = config["model_path"]
+    extraction_func = config["extraction_func"]
 
-	# config variables
-	model_name = config["model"]
-	test_size     = config["test_size"]
-	seed      = config["seed"]
-	features_path   = config["features_path"]
-	labels_path   = config["labels_path"]
-	testfeatures_path   = config["test_features"]
-	testlabels_path   = config["test_labels"]
-	results     = config["results"]
-	model_path = config["model_path"]
-	train_path    = config["train_path"]
-	test_path = config['test_path']
-	num_classes   = config["num_classes"]
-	classifier_path = config["classifier_path"]
-	cm_path = config["cm_path"]
-	include_top   = config["include_top"]
-	weights     = config["weights"]
+    # encoding labels from train folder
+    test_labels = os.listdir(test_path)
+    le = LabelEncoder()
+    le.fit(test_labels)
 
+    # call the extraction function from the utils file using the string from conf
+    features, labels = getattr(utils, extraction_func)(model_name,
+                                                       test_path,
+                                                       test_labels,
+                                                       imaug=False)
 
-	# create the pretrained models
-	if model_name == "vgg16":
-		base_model = VGG16(weights=weights)
-		try:
-			model = Model(base_model.input, base_model.get_layer('fc1').output)	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('fc1').output)
-		image_size = (224, 224)
-	elif model_name == "vgg19":
-		base_model = VGG19(weights=weights)
-		try:
-			model = Model(base_model.input, base_model.get_layer('fc1').output)	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('fc1').output)
-		image_size = (224, 224)
-	elif model_name == "resnet50":
-		base_model = ResNet50(weights=weights)
-		try:
-		  model = Model(base_model.input, base_model.get_layer('avg_pool').output)	  	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('avg_pool').output)	  
-		image_size = (224, 224)
-	elif model_name == "inceptionv3":
-		base_model = InceptionV3(include_top=include_top, weights=weights, input_tensor=Input(shape=(299,299,3)))
-		try:
-			model = Model(base_model.input, base_model.get_layer('custom').output)	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('custom').output)
-		image_size = (299, 299)
-	elif model_name == "inceptionresnetv2":
-		base_model = InceptionResNetV2(include_top=include_top, weights=weights, input_tensor=Input(shape=(299,299,3)))
-		try:
-			model = Model(base_model.input, base_model.get_layer('custom').output)	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('custom').output)
-		image_size = (299, 299)
-	elif model_name == "mobilenet":
-		base_model = MobileNetV2(include_top=include_top, weights=weights, input_tensor=Input(shape=(224,224,3)), input_shape=(224,224,3))
-		try:
-			model = Model(base_model.input, base_model.get_layer('custom').output)	  
-		except:	  
-			model = Model(input=base_model.input, output=base_model.get_layer('custom').output)
-		image_size = (224, 224)
-	elif model_name == "xception":
-		base_model = Xception(weights=weights)
-		try:
-			model = Model(base_model.input, base_model.get_layer('avg_pool').output)	  
-		except:
-			model = Model(input=base_model.input, output=base_model.get_layer('avg_pool').output)
-		image_size = (299, 299)
-	else:
-		base_model = None
+    # encode the labels using LabelEncoder
+    le = LabelEncoder()
+    le_labels = le.fit_transform(labels)
 
-	print ("loaded base model and model...")
+    try:
+        os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
+    except:
+        pass
 
+    # save features and labels as h5 files
+    utils.save_list_h5(test_features_path, features)
+    utils.save_list_h5(test_labels_path, labels)
+
+    print("Extraction finished...\n")
 
 ##############################################################################
-	"""
-	test_labels = os.listdir(test_path)
 
-	test_labels =[t for t in test_labels if not t.endswith('csv')]
-	# encode the labels
-	print ("encoding labels...")
-	le = LabelEncoder()
-	le.fit([tl for tl in test_labels])
-	# variables to hold features and labels
-	features = []
-	labels   = []
+    # import features and labels
+    h5f_data  = h5py.File(test_features_path, 'r')
+    h5f_label = h5py.File(test_labels_path, 'r')
 
-	# loop over all the labels in the folder
-	count = 1
-	for i, label in enumerate(test_labels):
-		cur_path = test_path + "/" + label
-		count = 1
-		print(f"Images in {cur_path} : {len(glob.glob(cur_path+'/*.png'))}")
-		for image_path in sorted(glob.glob(cur_path + "/*.png") + glob.glob(cur_path + "/*.jpg")):
-			img = image.load_img(image_path, target_size=image_size)
-			x = image.img_to_array(img)
-			x = np.expand_dims(x, axis=0)
-			x = preprocess_input(x)
-			feature = model.predict(x)
-			flat = feature.flatten()
-			features.append(flat)
-			labels.append(label)
-			print ("processed - " + str(count))
-			count += 1
-		print ("completed label - " + label)
-	# encode the labels using LabelEncoder
-	le = LabelEncoder()
-	le_labels = le.fit_transform(labels)
+    features_string = h5f_data['dataset_1']
+    labels_string   = h5f_label['dataset_1']
 
-	# save features and labels
-	h5f_data = h5py.File(testfeatures_path, 'w')
-	h5f_data.create_dataset('dataset_1', data=np.array(features))
+    features = np.array(features_string)
+    labels   = np.array(labels_string)
 
-	h5f_label = h5py.File(testlabels_path, 'w')
-	h5f_label.create_dataset('dataset_1', data=np.array(le_labels))
+    h5f_data.close()
+    h5f_label.close()
 
-	h5f_data.close()
-	h5f_label.close()
-    """	
+    with open(classifier_path, 'rb') as file:
+        logmodel = pickle.load(file)
 
-	# import features and labels
-	h5f_data  = h5py.File(testfeatures_path, 'r')
-	h5f_label = h5py.File(testlabels_path, 'r')
+    # Now test on the features
+    rank_1 = 0
+    for (feat, lab) in zip(features, labels):
+        predictions = logmodel.predict_proba(np.atleast_2d(feat))[0]
+        predictions = np.argsort(predictions)[::-1]
 
-	features_string = h5f_data['dataset_1']
-	labels_string   = h5f_label['dataset_1']
+            # rank-1 prediction increment
+        if lab == predictions[0]:
+            rank_1 += 1
+        #else:
+        #	print("missclassified \t {}")
+        #	print("True : {lab}\t Predicted : {predictions[0]}")
+    rank_1 = (rank_1 / float(len(labels))) * 100
+    print(f"\nrank_1 accuracy: {rank_1}")
 
-	features = np.array(features_string)
-	labels   = np.array(labels_string)
+    preds = logmodel.predict(features)
+    print(classification_report(labels, preds))
 
-	h5f_data.close()
-	h5f_label.close()
+    ##############################################################################
+
+    # Brier score
+    pred_prob = logmodel.predict_proba(features)
+    one_hot_labels = np.zeros((len(labels), 3))
+    for i, value in enumerate(labels):
+        one_hot_labels[i, value] = 1
+    bs = np.mean(np.sum((pred_prob - one_hot_labels)**2, axis=1))
+    print(f"Brier Score: {bs}")
 
 
-	with open(classifier_path, 'rb') as file:
-		logmodel = pickle.load(file)
+    f = open(results, "w")
+    f.write("Accuracy:  {}\n".format(rank_1))
+    f.write("Brier score:  {}\n".format(bs))
+    f.write("{}\n".format(classification_report(labels,  preds)))
+    f.close()
 
-	# Now test on the features
-	rank_1 = 0
-	for (feat, lab) in zip(features, labels):
-		predictions = logmodel.predict_proba(np.atleast_2d(feat))[0]
-		predictions = np.argsort(predictions)[::-1]
+    from sklearn.metrics import roc_auc_score
+    auc_ovr = roc_auc_score(labels, pred_prob, multi_class='ovr')
+    print("AUC ovr\t", auc_ovr)
+    auc_ovo = roc_auc_score(labels, pred_prob, multi_class='ovo')
+    print("AUC ovo\t", auc_ovo)
+    
 
-			# rank-1 prediction increment
-		if lab == predictions[0]:
-			rank_1 += 1
-		#else:
-		#	print("missclassified \t {}")
-		#	print("True : {lab}\t Predicted : {predictions[0]}")
-	rank_1 = (rank_1 / float(len(labels))) * 100
-	print(f"\nrank_1 accuracy: {rank_1}")
+    # display the confusion matrix
+    print ("confusion matrix")
 
-	preds = logmodel.predict(features)
-	print(classification_report(labels, preds))
+    # get the list of test lables
+    classes = sorted(list(os.listdir(test_path)))
+    classes =[t for t in classes if not t.endswith('csv')]
+    yclasses = ['true '+t for t in classes if not t.endswith('csv')]
 
-	##############################################################################
+    # plot the confusion matrix
+    cm = confusion_matrix(labels, preds)
 
-	# Brier score
-	pred_prob = logmodel.predict_proba(features)
-	one_hot_labels = np.zeros((len(labels), 3))
-	for i, value in enumerate(labels):
-		one_hot_labels[i, value] = 1
-	bs = np.mean(np.sum((pred_prob - one_hot_labels)**2, axis=1))
-	print(f"Brier Score: {bs}")
-
-
-	f = open(results, "w")
-	f.write("Accuracy:  {}\n".format(rank_1))
-	f.write("Brier score:  {}\n".format(bs))
-	f.write("{}\n".format(classification_report(labels,  preds)))
-	f.close()
-
-	from sklearn.metrics import roc_auc_score
-	auc_ovr = roc_auc_score(labels, pred_prob, multi_class='ovr')
-	print("AUC ovr\t", auc_ovr)
-	auc_ovo = roc_auc_score(labels, pred_prob, multi_class='ovo')
-	print("AUC ovo\t", auc_ovo)
-	
-
-	# display the confusion matrix
-	print ("confusion matrix")
-
-	# get the list of training lables
-	classes = sorted(list(os.listdir(train_path)))
-	classes =[t for t in classes if not t.endswith('csv')]
-	yclasses = ['true '+t for t in classes if not t.endswith('csv')]
-
-	# plot the confusion matrix
-	cm = confusion_matrix(labels, preds)
-
-	cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-	sns.set(font_scale=2)
-	sns.heatmap(cm,
-				annot=True,
-				cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True), cbar=False) 
-				
-	tick_marks = np.arange(len(classes))+.5
-	plt.xticks(tick_marks, classes, rotation=0,fontsize=20)
-	plt.yticks(tick_marks, yclasses, rotation=0, fontsize=20)
-	plt.savefig(f"cm_{configfile}", bbox_inches='tight')
-	
-	#fig, (ax1, ax2) = plt.subplots(2, 1)
-	#for i in sorted(glob.glob(cur_path + "/*.png") + glob.glob(cur_path + "/*.jpg")):
-	#	img = Image.open(i)
-	#	ax1.imshow(img)
-	#	proba = logmodel.predict_proba(features[i])
-	#	ax2.bar(range(3), proba, align='center', alpha=0.5)
-	#	fig.pause(0.5)
-	#	fig.clf()
-	
+    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    sns.set(font_scale=2)
+    sns.heatmap(cm,
+                annot=True,
+                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True), cbar=False) 
+                
+    tick_marks = np.arange(len(classes))+.5
+    plt.xticks(tick_marks, classes, rotation=0,fontsize=20)
+    plt.yticks(tick_marks, yclasses, rotation=0, fontsize=20)
+    plt.savefig(f"cm_{config}", bbox_inches='tight')
