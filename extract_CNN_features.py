@@ -1,4 +1,4 @@
-## extract_CNN_features.py 
+## extract_CNN_features.py
 ## A script to extract image features using a deep CNN
 ## Written by Daniel Buscombe,
 ## Northern Arizona University
@@ -11,7 +11,6 @@
 import os
 import json
 import argparse
-import h5py
 
 from sklearn.preprocessing import LabelEncoder
 
@@ -55,16 +54,13 @@ if __name__ == '__main__':
     le = LabelEncoder()
     le_labels = le.fit_transform(labels)
 
-    print(f"features shape: {features.shape}")
-    print(f"labels shape: {le_labels.shape}")
-
     try:
         os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
     except:
         pass
 
     # save features and labels as h5 files
-    #utils.save_list_h5(features_path, features)
-    #utils.save_list_h5(labels_path, labels)
+    utils.save_list_h5(features_path, features)
+    utils.save_list_h5(labels_path, labels)
 
     print("Extraction finished...\n")
