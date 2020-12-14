@@ -1,25 +1,26 @@
-# other imports
-from sklearn.preprocessing import LabelEncoder
-from PIL import Image
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-#from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import confusion_matrix
+## Written by Ryan Smith
+## University College Dublin
+## ryan.smith@ucdconnect.ie
+
+import os
+import json
+import argparse
+import pickle
 import numpy as np
 import h5py
-import os
-import sys
-import getopt
-import json
-import pickle
-import argparse
 import seaborn as sns
 import matplotlib.pyplot as plt
-import glob
+
+from sklearn.metrics import classification_report
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import roc_auc_score
 
 import utils
+
 #==============================================================
+
 if __name__ == '__main__':
     # Get command line argument for the config file
     parser = argparse.ArgumentParser()
@@ -68,7 +69,7 @@ if __name__ == '__main__':
 
     print("Extraction finished...\n")
 
-##############################################################################
+#==============================================================
 
     # import features and labels
     h5f_data  = h5py.File(test_features_path, 'r')
@@ -121,12 +122,11 @@ if __name__ == '__main__':
     f.write("{}\n".format(classification_report(labels,  preds)))
     f.close()
 
-    from sklearn.metrics import roc_auc_score
     auc_ovr = roc_auc_score(labels, pred_prob, multi_class='ovr')
     print("AUC ovr\t", auc_ovr)
     auc_ovo = roc_auc_score(labels, pred_prob, multi_class='ovo')
     print("AUC ovo\t", auc_ovo)
-    
+
 
     # display the confusion matrix
     print ("confusion matrix")
@@ -143,8 +143,8 @@ if __name__ == '__main__':
     sns.set(font_scale=2)
     sns.heatmap(cm,
                 annot=True,
-                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True), cbar=False) 
-                
+                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True), cbar=False)
+
     tick_marks = np.arange(len(classes))+.5
     plt.xticks(tick_marks, classes, rotation=0,fontsize=20)
     plt.yticks(tick_marks, yclasses, rotation=0, fontsize=20)
