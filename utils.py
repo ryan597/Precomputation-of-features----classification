@@ -233,6 +233,9 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
         cur_path = train_path + "/" + label
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
+        if imaug:
+            file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
+                          glob.glob(cur_path + "/oversample/*.png")
         file_names = sorted(file_names)
         for image_path1, image_path2 in zip(file_names, file_names[1:]):
             if int(image_path2[-16:-4]) - int(image_path1[-16:-4]) < 20:
