@@ -5,15 +5,12 @@ Set of useful functions used across extraction and testing files
 ## University College Dublin
 ## ryan.smith@ucdconnect.ie
 
-import os
 import sys
 import glob
-import h5py
 import random
+import h5py
 import numpy as np
-import Augmentor
 
-import torch
 import torchvision.transforms as T
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
@@ -114,7 +111,7 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
     #        del p
 
     # loop over all the labels and images in the folder
-    for i, label in enumerate(train_labels):
+    for label in train_labels:
         cur_path = train_path + "/" + label
         paths = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
         if imaug:
@@ -123,7 +120,7 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
         count = 1
         for image_path in paths:
             img = image.load_img(image_path, target_size=image_shape)
-            x = transform = transform(imaug, image_shape, img)
+            x = transform(imaug, image_shape, img)
             x = preprocess_input(x)
             feature = model.predict(x)
             # Ensure features are in vector form
@@ -163,7 +160,7 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
     labels = []
 
     # loop over all the labels and images in the folder
-    for i, label in enumerate(train_labels):
+    for label in train_labels:
         cur_path = train_path + "/" + label
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
@@ -229,7 +226,7 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     labels = []
 
     # loop over all the labels and images in the folder
-    for i, label in enumerate(train_labels):
+    for label in train_labels:
         cur_path = train_path + "/" + label
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
