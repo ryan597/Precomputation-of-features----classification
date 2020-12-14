@@ -13,6 +13,8 @@
   "classifier_path" : "out/mobilenet/IR2_flo_classifier_imaug.pickle",
   "model_path"      : "out/mobilenet/IR2_flo_model_imaug",
   "cm_path"         : "out/mobilenet/IR2_flo_cm_imaug.png",
+  "imaug"           : true,
+  "extraction_func" : "two_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,

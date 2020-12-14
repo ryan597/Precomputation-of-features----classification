@@ -13,6 +13,8 @@
   "classifier_path" : "out/xception/IR2flo_late_classifier_imaug.pickle",
   "model_path"      : "out/xception/IR2flo_late_model_imaug",
   "cm_path"         : "out/xception/IR2flo_late_cm_imaug.png",
+  "imaug"           : true,
+  "extraction_func" : "three_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,

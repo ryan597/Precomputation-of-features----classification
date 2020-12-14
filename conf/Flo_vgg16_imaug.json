@@ -13,6 +13,8 @@
   "classifier_path" : "out/vgg16/Floclassifier_imaug.pickle",
   "model_path"      : "out/vgg16/Flomodel_imaug",
   "cm_path"         : "out/vgg16/Flocm_imaug.png",
+  "imaug"           : true,
+  "extraction_func" : "single_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,

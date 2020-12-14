@@ -13,6 +13,8 @@
   "classifier_path" : "out/xception/Floclassifier_imaug.pickle",
   "model_path"      : "out/xception/Flomodel_imaug",
   "cm_path"         : "out/xception/Flocm_imaug.png",
+  "imaug"           : true,
+  "extraction_func" : "single_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,

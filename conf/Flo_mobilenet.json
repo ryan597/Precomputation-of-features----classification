@@ -13,6 +13,8 @@
   "classifier_path" : "out/mobilenet/Floclassifier.pickle",
   "model_path"      : "out/mobilenet/Flomodel",
   "cm_path"         : "out/mobilenet/Flocm.png",
+  "imaug"           : false,
+  "extraction_func" : "single_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,

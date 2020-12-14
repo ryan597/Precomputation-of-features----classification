@@ -13,6 +13,8 @@
   "classifier_path" : "out/xception/IR2flo_classifier.pickle",
   "model_path"      : "out/xception/IR2flo_model",
   "cm_path"         : "out/xception/IR2flo_cm.png",
+  "imaug"           : false,
+  "extraction_func" : "three_input_extraction",
 
   "test_size"       : 0.10,
   "seed"            : 2018,
