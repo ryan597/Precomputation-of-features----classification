@@ -9,6 +9,7 @@ import os
 import sys
 import glob
 import h5py
+import random
 import numpy as np
 import Augmentor
 
@@ -94,37 +95,35 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
     elif model_name == "xception":
         from tensorflow.python.keras.applications.xception import preprocess_input
 
-    model, image_size = load_pretrained(model_name)
+    model, image_shape = load_pretrained(model_name)
 
     features = []
     labels = []
 
-    if imaug:
-        # Image Augmentation
-        for k in range(len(train_labels)):
-            p = Augmentor.Pipeline(train_path+os.sep+train_labels[k])
-            p.rotate(probability=0.5, max_left_rotation=25, max_right_rotation=25)
-            p.zoom(probability=0.5, min_factor=1.05, max_factor=1.5)
-            p.crop_random(probability=0.5, percentage_area=0.85)
-            p.random_brightness(probability=0.5, max_factor=1.2, min_factor=0.8)
-            #p.flip_left_right(probability=0.5)
-            #p.flip_top_bottom(probability=0.5)
-            p.sample(2000)
-            del p
+    #if imaug == "process":
+    #    # Image Augmentation
+    #    for k in range(len(train_labels)):
+    #        p = Augmentor.Pipeline(train_path+os.sep+train_labels[k])
+    #        p.rotate(probability=0.5, max_left_rotation=25, max_right_rotation=25)
+    #        p.zoom(probability=0.5, min_factor=1.05, max_factor=1.5)
+    #        p.crop_random(probability=0.5, percentage_area=0.85)
+    #        p.random_brightness(probability=0.5, max_factor=1.2, min_factor=0.8)
+    #        #p.flip_left_right(probability=0.5)
+    #        #p.flip_top_bottom(probability=0.5)
+    #        p.sample(2000)
+    #        del p
 
     # loop over all the labels and images in the folder
     for i, label in enumerate(train_labels):
         cur_path = train_path + "/" + label
+        paths = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
         if imaug:
-            paths = glob.glob(cur_path + "/*.png")+glob.glob(cur_path + "/output/*.png") + \
-                    glob.glob(cur_path + "/*.jpg")+glob.glob(cur_path + "/output/*.jpg")
-        else:
-            paths = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
+            paths += glob.glob(cur_path + "/oversample/*.png") + \
+                    glob.glob(cur_path + "/oversample/*.jpg")
         count = 1
         for image_path in paths:
-            img = image.load_img(image_path, target_size=image_size)
-            x = image.img_to_array(img)
-            x = np.expand_dims(x, axis=0)
+            img = image.load_img(image_path, target_size=image_shape)
+            x = transform = transform(imaug, image_shape, img)
             x = preprocess_input(x)
             feature = model.predict(x)
             # Ensure features are in vector form
@@ -159,44 +158,46 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
         from tensorflow.python.keras.applications.xception import preprocess_input
 
     model, image_shape = load_pretrained(model_name)
-    get_transform(augment=False, image_shape=image_shape)
 
     features = []
     labels = []
-
-    transform = get_transform(imaug, image_shape)
 
     # loop over all the labels and images in the folder
     for i, label in enumerate(train_labels):
         cur_path = train_path + "/" + label
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
+        if imaug:
+            file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
+                          glob.glob(cur_path + "/oversample/*.png")
         file_names = sorted(file_names)
         for image_path1, image_path2 in zip(file_names, file_names[1:]):
-            if int(image_path2[-16:-4]) - int(image_path1[-16:-4]) < 20:
-                try:
-                    img1 = image.load_img(image_path1, target_size=image_shape)
-                    img2 = image.load_img(image_path2, target_size=image_shape)
+            diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
+            if  diff < 20 and diff > 0:
+                #try:
+                img1 = image.load_img(image_path1, target_size=image_shape)
+                img2 = image.load_img(image_path2, target_size=image_shape)
 
-                    combined = torch.cat((torch.Tensor(img1),
-                                   torch.Tensor(img2)), dim=0)
-                    combined_transform = transform(combined)
+                imgs = transform(imaug, image_shape, img1, img2)
 
-                    x = combined_transform[0]
-                    y = combined_transform[1]
+                x = imgs[0]
+                y = imgs[1]
 
-                    x = preprocess_input(x)
-                    y = preprocess_input(y)
+                x = preprocess_input(x)
+                y = preprocess_input(y)
+                # Tensorflow models are channels last
+                x = np.transpose(x, (2,1,0))[None]
+                y = np.transpose(y, (2,1,0))[None]
 
-                    featx = model.predict(x)
-                    featy = model.predict(y)
+                featx = model.predict(x)
+                featy = model.predict(y)
 
-                    features.append([featx.flatten(), featy.flatten()])
-                    labels.append(label)
-                    print ("processed - " + str(count))
-                    count += 1
-                except:
-                    pass
+                features.append([featx.flatten(), featy.flatten()])
+                labels.append(label)
+                print ("processed - " + str(count))
+                count += 1
+                #except:
+                #    pass
 
     return features, labels
 
@@ -222,12 +223,10 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     elif model_name == "xception":
         from tensorflow.python.keras.applications.xception import preprocess_input
 
-    model, image_size = load_pretrained(model_name)
+    model, image_shape = load_pretrained(model_name)
 
     features = []
     labels = []
-
-    transform = get_transform(imaug, (image_size, image_size))
 
     # loop over all the labels and images in the folder
     for i, label in enumerate(train_labels):
@@ -238,20 +237,24 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
         for image_path1, image_path2 in zip(file_names, file_names[1:]):
             if int(image_path2[-16:-4]) - int(image_path1[-16:-4]) < 20:
                 try:
-                    img1 = image.load_img(image_path1, target_size=image_size)
-                    img2 = image.load_img(image_path2, target_size=image_size)
+                    img1 = image.load_img(image_path1, target_size=image_shape)
+                    img2 = image.load_img(image_path2, target_size=image_shape)
                     img3 = image.load_img('data/flow/train/'+label+'/'+image_path1[-16:-4]+'.png',
-                                          target_size=image_size, color_mode='grayscale')
+                                          target_size=image_shape)
 
-                    x = torch.cat((torch.Tensor(img1),
-                                   torch.Tensor(img2),
-                                   torch.Tensor(img3)), dim=0)
-                    x = transform(x)
+                    imgs = transform(imaug, image_shape, img1, img2, img3)
 
+                    x = imgs[0]
+                    y = imgs[1]
+                    z = imgs[2]
 
                     x = preprocess_input(x)
                     y = preprocess_input(y)
                     z = preprocess_input(z)
+                    # Tensorflow models are channels last
+                    x = np.transpose(x, (2,1,0))[None]
+                    y = np.transpose(y, (2,1,0))[None]
+                    z = np.transpose(z, (2,1,0))[None]
 
                     featx = model.predict(x)
                     featy = model.predict(y)
@@ -265,18 +268,25 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
                     pass
     return features, labels
 
-def get_transform(augment=False, image_shape=(224, 224)):
+def transform(augment, image_shape, *args):
     if augment:
         preprocess_transform = T.Compose([
-            T.ToPILImage(),
-            T.RandomRotation(degrees=15, fill=(0,)),
-            T.RandomResizedCrop(size=image_shape, scale=(0.8, 1.0))
-            #T.ColorJitter(0.3, 0.2, 0.2, 0.2)
+            #T.ToPILImage(),
+            T.RandomRotation(degrees=15),
+            T.RandomResizedCrop(size=image_shape, scale=(0.8, 1.2)),
+            #T.ColorJitter(0.3, 0.2, 0.2, 0.2),
+            T.ToTensor()
         ])
     else:
         preprocess_transform = T.Compose([
-            T.ToPILImage(),
-            T.Resize(size=image_shape)
+            #T.ToPILImage(),
+            T.Resize(size=image_shape),
+            T.ToTensor()
         ])
-    return preprocess_transform
 
+    imgs = []
+    for img in args:
+        seed = random.randint(0, 2**32)
+        random.seed(seed)
+        imgs.append(preprocess_transform(img).numpy())
+    return imgs
