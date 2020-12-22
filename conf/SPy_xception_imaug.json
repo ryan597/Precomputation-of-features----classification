@@ -5,18 +5,12 @@
 
   "train_path"      : "data/spyflow/train",
   "test_path"       : "data/spyflow/test",
-  "features_path"   : "out/xception/Spyfeatures_imaug.h5",
-  "labels_path"     : "out/xception/Spylabels_imaug.h5",
-  "test_features"   : "out/xception/Spytestfeatures.h5",
-  "test_labels"	    : "out/xception/Spytestlabels.h5",
-  "results"         : "out/xception/Spyresults_imaug.txt",
-  "classifier_path" : "out/xception/SPyclassifier_imaug.pickle",
-  "model_path"      : "out/xception/Spymodel_imaug",
-  "cm_path"         : "out/xception/Spycm_imaug.png",
+  "features_path"   : "out/xception/h5files/Spyfeatures_imaug.h5",
+  "labels_path"     : "out/xception/h5files/Spylabels_imaug.h5",
+  "test_features"   : "out/xception/h5files/Spytestfeatures.h5",
+  "test_labels"	    : "out/xception/h5files/Spytestlabels.h5",
+  "results"         : "out/xception/results/Spyresults_imaug.txt",
+  "classifier_path" : "out/xception/models/SPyclassifier_imaug.pickle",
   "imaug"           : true,
   "extraction_func" : "single_input_extraction",
-
-  "test_size"       : 0.10,
-  "seed"            : 2018,
-  "num_classes"     : 3
 }

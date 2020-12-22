@@ -61,6 +61,6 @@ if __name__ == '__main__':
 
     # save features and labels as h5 files
     utils.save_list_h5(features_path, features)
-    utils.save_list_h5(labels_path, labels)
+    utils.save_list_h5(labels_path, le_labels)
 
     print("Extraction finished...\n")

@@ -5,18 +5,12 @@
 
   "train_path"      : "data/IR/train",
   "test_path"       : "data/IR/test",
-  "features_path"   : "out/xception/IR2features_imaug.h5",
-  "labels_path"     : "out/xception/IR2labels_imaug.h5",
-  "test_features"   : "out/xception/IR2testfeatures_imaug.h5",
-  "test_labels"	    : "out/xception/IR2testlabels.h5",
-  "results"         : "out/xception/IR2results_imaug.txt",
-  "classifier_path" : "out/xception/IR2classifier_imaug.pickle",
-  "model_path"      : "out/xception/IR2model_imaug",
-  "cm_path"         : "out/xception/IR2cm_imaug.png",
+  "features_path"   : "out/xception/h5files/IR2features_imaug.h5",
+  "labels_path"     : "out/xception/h5files/IR2labels_imaug.h5",
+  "test_features"   : "out/xception/h5files/IR2testfeatures_imaug.h5",
+  "test_labels"	    : "out/xception/h5files/IR2testlabels.h5",
+  "results"         : "out/xception/results/IR2results_imaug.txt",
+  "classifier_path" : "out/xception/models/IR2classifier_imaug.pickle",
   "imaug"           : true,
   "extraction_func" : "two_input_extraction",
-
-  "test_size"       : 0.10,
-  "seed"            : 2018,
-  "num_classes"     : 3
 }

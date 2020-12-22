@@ -35,8 +35,8 @@ if __name__ == '__main__':
     weights = config["weights"]
     include_top = config["include_top"]
     test_path = config["test_path"]
-    test_features_path = config["test_features_path"]
-    test_labels_path = config["test_labels_path"]
+    test_features_path = config["test_features"]
+    test_labels_path = config["test_labels"]
     results = config["results"]
     classifier_path = config["classifier_path"]
     cm_path = config["cm_path"]
@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     # save features and labels as h5 files
     utils.save_list_h5(test_features_path, features)
-    utils.save_list_h5(test_labels_path, labels)
+    utils.save_list_h5(test_labels_path, le_labels)
 
     print("Extraction finished...\n")
 
@@ -83,6 +83,9 @@ if __name__ == '__main__':
 
     h5f_data.close()
     h5f_label.close()
+
+    print(f"Features shape:\t{features.shape}")
+    print(f"Labels shape:\t{labels.shape}")
 
     with open(classifier_path, 'rb') as file:
         logmodel = pickle.load(file)

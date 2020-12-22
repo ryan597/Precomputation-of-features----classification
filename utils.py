@@ -67,8 +67,9 @@ def save_list_h5(path, list_to_save):
         path = (string) where to save the H5 file (include .h5 extension)
         list_to_save = (list) the vector list to save in the file
     """
-    with open(h5py.File(path), 'w') as hfile:
-        hfile.create_dataset('dataset_1', data=np.array(list_to_save))
+    hfile = h5py.File(path, 'w')
+    hfile.create_dataset('dataset_1', data=np.array(list_to_save))
+    hfile.close()
 
 def single_input_extraction(model_name, train_path, train_labels, imaug=False):
     """

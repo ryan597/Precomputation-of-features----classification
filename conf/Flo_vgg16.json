@@ -5,18 +5,12 @@
 
   "train_path"      : "data/flow/train",
   "test_path"       : "data/flow/test",
-  "features_path"   : "out/vgg16/Flofeatures.h5",
-  "labels_path"     : "out/vgg16/Flolabels.h5",
-  "test_features"   : "out/vgg16/Flotestfeatures.h5",
-  "test_labels"	    : "out/vgg16/Flotestlabels.h5",
-  "results"         : "out/vgg16/Floresults.txt",
-  "classifier_path" : "out/vgg16/Floclassifier.pickle",
-  "model_path"      : "out/vgg16/Flomodel",
-  "cm_path"         : "out/vgg16/Flocm.png",
+  "features_path"   : "out/vgg16/h5files/Flofeatures.h5",
+  "labels_path"     : "out/vgg16/h5files/Flolabels.h5",
+  "test_features"   : "out/vgg16/h5files/Flotestfeatures.h5",
+  "test_labels"	    : "out/vgg16/h5files/Flotestlabels.h5",
+  "results"         : "out/vgg16/results/Floresults.txt",
+  "classifier_path" : "out/vgg16/models/Floclassifier.pickle",
   "imaug"           : false,
   "extraction_func" : "single_input_extraction",
-
-  "test_size"       : 0.10,
-  "seed"            : 2018,
-  "num_classes"     : 3
 }

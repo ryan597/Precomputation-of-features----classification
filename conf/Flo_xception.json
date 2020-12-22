@@ -5,18 +5,12 @@
 
   "train_path"      : "data/flow/train",
   "test_path"       : "data/flow/test",
-  "features_path"   : "out/xception/Flofeatures.h5",
-  "labels_path"     : "out/xception/Flolabels.h5",
-  "test_features"   : "out/xception/Flotestfeatures.h5",
-  "test_labels"	    : "out/xception/Flotestlabels.h5",
-  "results"         : "out/xception/Floresults.txt",
-  "classifier_path" : "out/xception/Floclassifier.pickle",
-  "model_path"      : "out/xception/Flomodel",
-  "cm_path"         : "out/xception/Flocm.png",
+  "features_path"   : "out/xception/h5files/Flofeatures.h5",
+  "labels_path"     : "out/xception/h5files/Flolabels.h5",
+  "test_features"   : "out/xception/h5files/Flotestfeatures.h5",
+  "test_labels"	    : "out/xception/h5files/Flotestlabels.h5",
+  "results"         : "out/xception/results/Floresults.txt",
+  "classifier_path" : "out/xception/models/Floclassifier.pickle",
   "imaug"           : false,
   "extraction_func" : "single_input_extraction",
-
-  "test_size"       : 0.10,
-  "seed"            : 2018,
-  "num_classes"     : 3
 }
