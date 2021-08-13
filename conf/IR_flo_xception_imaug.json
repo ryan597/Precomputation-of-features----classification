@@ -1,0 +1,16 @@
+{
+  "model"           : "xception",
+  "weights"         : "imagenet",
+  "include_top"     : false,
+
+  "train_path"      : "data/IR/train",
+  "test_path"       : "data/IR/test",
+  "features_path"   : "out/xception/h5files/IR_flo_features_imaug.h5",
+  "labels_path"     : "out/xception/h5files/IR_flo_labels_imaug.h5",
+  "test_features"   : "out/xception/h5files/IR_flo_testfeatures.h5",
+  "test_labels"	    : "out/xception/h5files/IR_flo_testlabels.h5",
+  "results"         : "out/xception/results/IR_flo_results_imaug.txt",
+  "classifier_path" : "out/xception/models/IR_flo_classifier_imaug.pickle",
+  "imaug"           : true,
+  "extraction_func" : "two_input_extraction"
+ }
