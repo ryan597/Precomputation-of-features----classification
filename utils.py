@@ -166,17 +166,7 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
         cur_path = train_path + "/" + label
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
-        if imaug:
-            aug_file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
-                        glob.glob(cur_path + "/oversample/*.png")
         file_names = sorted(file_names)
-        aug_file_names = sorted(aug_file_names)
-
-
-        for aug_image_path1, aug_image_path2 in zip(aug_file_names, aug_file_names[1:]):
-            diff = int(aug_image_path2[-16:-4]) - int(aug_image_path1[-16:-4])
-            if  diff < 20 and diff > 0:
-
 
         for image_path1, image_path2 in zip(file_names, file_names[1:]):
             # get the image names and compare
@@ -186,7 +176,7 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 img1 = image.load_img(image_path1, target_size=image_shape)
                 img2 = image.load_img(image_path2, target_size=image_shape)
 
-                imgs = transform(imaug, image_shape, img1, img2)
+                imgs = transform(False, image_shape, image=img1, image2=img2)
 
                 x = imgs[0]
                 y = imgs[1]
@@ -207,9 +197,37 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 #except:
                 #    pass
 
+        if imaug == True:
+            oversample = 0
+            while oversample < 2000:
+                for image_path1, image_path2 in zip(file_names, file_names[1:]):
+                    diff = int(aug_image_path2[-16:-4]) - int(aug_image_path1[-16:-4])
+                    if  diff < 20 and diff > 0:
+                        img1 = image.load_img(image_path1, target_size=image_shape)
+                        img2 = image.load_img(image_path2, target_size=image_shape)
 
+                        imgs = transform(imaug, image_shape, image=img1, image2=img2)
+
+                        x = imgs[0]
+                        y = imgs[1]
+
+                        x = preprocess_input(x)
+                        y = preprocess_input(y)
+                        # Tensorflow models are channels last
+                        x = np.transpose(x, (2,1,0))[None]
+                        y = np.transpose(y, (2,1,0))[None]
+
+                        featx = model.predict(x)
+                        featy = model.predict(y)
+
+                        features.append([featx.flatten(), featy.flatten()])
+                        labels.append(label)
+                        print ("processed - " + str(count))
+                        count += 1
+                        oversample +=1
 
     return features, labels
+
 
 def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     """
@@ -280,6 +298,7 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
                 except:
                     pass
     return features, labels
+
 
 def transform(augment, image_shape, *args):
 
