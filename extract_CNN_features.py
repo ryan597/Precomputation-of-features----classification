@@ -33,9 +33,7 @@ if __name__ == '__main__':
     train_path = config["train_path"]
     features_path = config["features_path"]
     labels_path = config["labels_path"]
-    test_size = config["test_size"]
     results = config["results"]
-    model_path = config["model_path"]
     imaug = config["imaug"]
     extraction_func = config["extraction_func"]
 

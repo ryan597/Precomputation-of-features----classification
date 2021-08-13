@@ -15,7 +15,7 @@ import torchvision.transforms as T
 import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
-
+from albumentations.pytorch import ToTensorV2
 # other imports in respective functions as they are only called once for efficiency
 
 
@@ -176,16 +176,17 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 img1 = image.load_img(image_path1, target_size=image_shape)
                 img2 = image.load_img(image_path2, target_size=image_shape)
 
-                imgs = transform(False, image_shape, image=img1, image2=img2)
+                imgs = transform(False, image_shape, np.array(img1), np.array(img2))
+                # Tensorflow expects float
+                x = imgs['image'][None].astype('float')
+                y = imgs['image2'][None].astype('float')
 
-                x = imgs[0]
-                y = imgs[1]
+                # Tensorflow models are channels last
+                #x = np.transpose(x, (2,1,0))[None]
+                #y = np.transpose(y, (2,1,0))[None]
 
                 x = preprocess_input(x)
                 y = preprocess_input(y)
-                # Tensorflow models are channels last
-                x = np.transpose(x, (2,1,0))[None]
-                y = np.transpose(y, (2,1,0))[None]
 
                 featx = model.predict(x)
                 featy = model.predict(y)
@@ -206,7 +207,7 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                         img1 = image.load_img(image_path1, target_size=image_shape)
                         img2 = image.load_img(image_path2, target_size=image_shape)
 
-                        imgs = transform(imaug, image_shape, image=img1, image2=img2)
+                        imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
 
                         x = imgs[0]
                         y = imgs[1]
@@ -300,23 +301,29 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     return features, labels
 
 
-def transform(augment, image_shape, *args):
+def transform(augment, image_shape, img1, img2=None):
+    """
+    Apply transformations to input images. Augmentations can also be applied.
+    """
+    additional_targets = {"image2":"image"} if type(img2) == np.ndarray else None
 
     if augment:
         preprocess_transform = A.Compose([
             #T.ToPILImage(),
             A.RandomRotation(degrees=15),
-            A.RandomResizedCrop(size=image_shape, scale=(0.8, 1.2)),
+            A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.8, 1.2)),
             #A.ColorJitter(0.3, 0.2, 0.2, 0.2),
-            A.ToTensorV2()],
-            additional_targets={'image2': 'image'}
+            #ToTensorV2()
+            ],
+            additional_targets = additional_targets
         )
     else:
-        preprocess_transform = T.Compose([
+        preprocess_transform = A.Compose([
             #T.ToPILImage(),
-            A.Resize(size=image_shape),
-            A.ToTensorV2()],
-            additional_targets={'image2': 'image'}
+            A.Resize(image_shape[0], image_shape[1]),
+            #ToTensorV2()
+            ],
+            additional_targets = additional_targets
         )
-    transformed = preprocess_transform(args)
-    return [transformed['image'], transformed['image2']]
+    transformed = preprocess_transform(image=img1, image2=img2)
+    return transformed
