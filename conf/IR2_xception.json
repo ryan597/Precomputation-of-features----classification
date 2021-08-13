@@ -12,5 +12,5 @@
   "results"         : "out/xception/results/IR2results.txt",
   "classifier_path" : "out/xception/models/IR2classifier.pickle",
   "imaug"           : false,
-  "extraction_func" : "two_input_extraction",
+  "extraction_func" : "two_input_extraction"
 }

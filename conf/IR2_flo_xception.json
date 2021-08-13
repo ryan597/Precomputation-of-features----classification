@@ -12,5 +12,5 @@
   "results"         : "out/xception/results/IR2flo_results.txt",
   "classifier_path" : "out/xception/models/IR2flo_classifier.pickle",
   "imaug"           : false,
-  "extraction_func" : "three_input_extraction",
+  "extraction_func" : "three_input_extraction"
 }

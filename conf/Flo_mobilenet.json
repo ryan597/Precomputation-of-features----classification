@@ -12,6 +12,6 @@
   "results"         : "out/mobilenet/results/Floresults.txt",
   "classifier_path" : "out/mobilenet/models/Floclassifier.pickle",
   "imaug"           : false,
-  "extraction_func" : "single_input_extraction",
+  "extraction_func" : "single_input_extraction"
 
 }

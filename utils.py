@@ -12,6 +12,7 @@ import h5py
 import numpy as np
 
 import torchvision.transforms as T
+import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
 
@@ -166,10 +167,19 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
         count = 1
         file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
         if imaug:
-            file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
-                          glob.glob(cur_path + "/oversample/*.png")
+            aug_file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
+                        glob.glob(cur_path + "/oversample/*.png")
         file_names = sorted(file_names)
+        aug_file_names = sorted(aug_file_names)
+
+
+        for aug_image_path1, aug_image_path2 in zip(aug_file_names, aug_file_names[1:]):
+            diff = int(aug_image_path2[-16:-4]) - int(aug_image_path1[-16:-4])
+            if  diff < 20 and diff > 0:
+
+
         for image_path1, image_path2 in zip(file_names, file_names[1:]):
+            # get the image names and compare
             diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
             if  diff < 20 and diff > 0:
                 #try:
@@ -196,6 +206,8 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 count += 1
                 #except:
                 #    pass
+
+
 
     return features, labels
 
@@ -270,24 +282,22 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     return features, labels
 
 def transform(augment, image_shape, *args):
+
     if augment:
-        preprocess_transform = T.Compose([
+        preprocess_transform = A.Compose([
             #T.ToPILImage(),
-            T.RandomRotation(degrees=15),
-            T.RandomResizedCrop(size=image_shape, scale=(0.8, 1.2)),
-            #T.ColorJitter(0.3, 0.2, 0.2, 0.2),
-            T.ToTensor()
-        ])
+            A.RandomRotation(degrees=15),
+            A.RandomResizedCrop(size=image_shape, scale=(0.8, 1.2)),
+            #A.ColorJitter(0.3, 0.2, 0.2, 0.2),
+            A.ToTensorV2()],
+            additional_targets={'image2': 'image'}
+        )
     else:
         preprocess_transform = T.Compose([
             #T.ToPILImage(),
-            T.Resize(size=image_shape),
-            T.ToTensor()
-        ])
-
-    imgs = []
-    for img in args:
-        seed = random.randint(0, 2**32)
-        random.seed(seed)
-        imgs.append(preprocess_transform(img).numpy())
-    return imgs
+            A.Resize(size=image_shape),
+            A.ToTensorV2()],
+            additional_targets={'image2': 'image'}
+        )
+    transformed = preprocess_transform(args)
+    return [transformed['image'], transformed['image2']]

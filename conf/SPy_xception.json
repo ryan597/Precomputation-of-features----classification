@@ -12,5 +12,5 @@
   "results"         : "out/xception/results/Spyresults.txt",
   "classifier_path" : "out/xception/models/SPyclassifier.pickle",
   "imaug"           : false,
-  "extraction_func" : "single_input_extraction",
-}
+  "extraction_func" : "single_input_extraction"
+ }

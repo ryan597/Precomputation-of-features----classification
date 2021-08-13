@@ -12,5 +12,5 @@
   "results"         : "out/resnet50/results/Floresults_imaug.txt",
   "classifier_path" : "out/resnet50/models/Floclassifier_imaug.pickle",
   "imaug"           : true,
-  "extraction_func" : "single_input_extraction",
+  "extraction_func" : "single_input_extraction"
 }

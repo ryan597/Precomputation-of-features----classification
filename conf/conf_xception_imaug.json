@@ -12,5 +12,5 @@
   "results"         : "out/xception/results/IRresults_imaug.txt",
   "classifier_path" : "out/xception/models/IRclassifier_imaug.pickle",
   "imaug"           : true,
-  "extraction_func" : "single_input_extraction",
+  "extraction_func" : "single_input_extraction"
 }
