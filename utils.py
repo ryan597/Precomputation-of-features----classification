@@ -202,21 +202,21 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
             oversample = 0
             while oversample < 2000:
                 for image_path1, image_path2 in zip(file_names, file_names[1:]):
-                    diff = int(aug_image_path2[-16:-4]) - int(aug_image_path1[-16:-4])
+                    diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
                     if  diff < 20 and diff > 0:
                         img1 = image.load_img(image_path1, target_size=image_shape)
                         img2 = image.load_img(image_path2, target_size=image_shape)
 
                         imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
 
-                        x = imgs[0]
-                        y = imgs[1]
+                        x = imgs['image'][None].astype('float')
+                        y = imgs['image2'][None].astype('float')
 
                         x = preprocess_input(x)
                         y = preprocess_input(y)
                         # Tensorflow models are channels last
-                        x = np.transpose(x, (2,1,0))[None]
-                        y = np.transpose(y, (2,1,0))[None]
+                        #x = np.transpose(x, (2,1,0))[None]
+                        #y = np.transpose(y, (2,1,0))[None]
 
                         featx = model.predict(x)
                         featy = model.predict(y)
@@ -310,7 +310,7 @@ def transform(augment, image_shape, img1, img2=None):
     if augment:
         preprocess_transform = A.Compose([
             #T.ToPILImage(),
-            A.RandomRotation(degrees=15),
+            A.Rotate(limit=20, p=0.6),
             A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.8, 1.2)),
             #A.ColorJitter(0.3, 0.2, 0.2, 0.2),
             #ToTensorV2()
