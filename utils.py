@@ -11,8 +11,9 @@ import random
 import h5py
 import numpy as np
 
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# Suppress tensorflow depreciation warnings
+import warnings
+warnings.filterwarnings('ignore')
 
 import torchvision.transforms as T
 import albumentations as A
@@ -107,9 +108,9 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
         count = 1
         for image_path in paths:
             img = image.load_img(image_path, target_size=image_shape)
-            x = transform(False, image_shape, np.array(img))
+            img = transform(False, image_shape, np.array(img))
             # Expects a 4D float array
-            x = imgs['image'][None].astype('float')
+            x = img['image'][None].astype('float')
             x = preprocess_input(x)
             feature = model.predict(x)
             # Ensure features are in vector form
@@ -125,9 +126,9 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
                 for image_path in paths:
                     if oversample < 2000 and np.random.random(1) < 0.3:
                         img = image.load_img(image_path, target_size=image_shape)
-                        x = transform(True, image_shape, np.array(img))
+                        img = transform(True, image_shape, np.array(img))
                         # Expects a 4D float array
-                        x = imgs['image'][None].astype('float')
+                        x = img['image'][None].astype('float')
                         x = preprocess_input(x)
                         feature = model.predict(x)
                         # Ensure features are in vector form
