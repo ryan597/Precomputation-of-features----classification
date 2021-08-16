@@ -11,13 +11,13 @@ import random
 import h5py
 import numpy as np
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import torchvision.transforms as T
 import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
-
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def load_pretrained(model_name, include_top=False, weights="imagenet"):
     """
@@ -98,19 +98,6 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
 
     features = []
     labels = []
-
-    #if imaug == "process":
-    #    # Image Augmentation
-    #    for k in range(len(train_labels)):
-    #        p = Augmentor.Pipeline(train_path+os.sep+train_labels[k])
-    #        p.rotate(probability=0.5, max_left_rotation=25, max_right_rotation=25)
-    #        p.zoom(probability=0.5, min_factor=1.05, max_factor=1.5)
-    #        p.crop_random(probability=0.5, percentage_area=0.85)
-    #        p.random_brightness(probability=0.5, max_factor=1.2, min_factor=0.8)
-    #        #p.flip_left_right(probability=0.5)
-    #        #p.flip_top_bottom(probability=0.5)
-    #        p.sample(2000)
-    #        del p
 
     # loop over all the labels and images in the folder
     for label in train_labels:
@@ -292,31 +279,31 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
         if imaug == True:
             oversample = 0
             while oversample < 2000:
-                for image_path1, image_path2 in zip(file_names, file_names[1:]):
-                    diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
-                    if  diff < 20 and diff > 0:
-                        if oversample < 2000 and np.random.random(1) < 0.3: # random accept or reject this image pair
-                            img1 = image.load_img(image_path1, target_size=image_shape)
-                            img2 = image.load_img(image_path2, target_size=image_shape)
+                for image_path_IR in file_names_IR:
+                    image_path_OF = image_path_IR[:5] + "flow" + image_path_IR[7:-4] + ".png"
+                    if os.path.exists(image_path_OF) and oversample < 2000 and np.random.random(1) < 0.3:
+                        img_IR = image.load_img(image_path_IR, target_size=image_shape)
+                        img_OF = image.load_img(image_path_OF, target_size=image_shape)
 
-                            imgs = transform(True, image_shape, np.array(img1), np.array(img2))
+                        imgs = transform(imaug, image_shape, np.array(img_IR), np.array(img_OF))
 
-                            x = imgs['image'][None].astype('float')
-                            y = imgs['image2'][None].astype('float')
+                        x = imgs['image'][None].astype('float')
+                        y = imgs['image2'][None].astype('float')
 
-                            x = preprocess_input(x)
-                            y = preprocess_input(y)
+                        x = preprocess_input(x)
+                        y = preprocess_input(y)
 
-                            featx = model.predict(x)
-                            featy = model.predict(y)
+                        featx = model.predict(x)
+                        featy = model.predict(y)
 
-                            features.append(np.array([featx, featy]).flatten())
-                            labels.append(label)
-                            print ("processed - " + str(count))
-                            count += 1
-                            oversample +=1
-                        elif oversample >= 2000:
-                            break
+                        features.append(np.array([featx, featy]).flatten())
+                        labels.append(label)
+                        print ("processed - " + str(count))
+                        count += 1
+                        oversample +=1
+                    
+                    elif oversample >= 2000:
+                        break
 
         print("completed label - " + label)
     return features, labels
