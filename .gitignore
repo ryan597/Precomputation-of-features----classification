@@ -3,6 +3,4 @@ out/**
 images/**
 notebook_out/**
 
-redundent/**
-
 __pycache__/**

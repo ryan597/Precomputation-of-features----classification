@@ -5,12 +5,12 @@
 
   "train_path"      : "data/IR/train",
   "test_path"       : "data/IR/test",
-  "features_path"   : "out/xception/h5files/IR2flo_late_features_imaug.h5",
-  "labels_path"     : "out/xception/h5files/IR2flo_late_labels_imaug.h5",
-  "test_features"   : "out/xception/h5files/IR2flo_late_testfeatures.h5",
-  "test_labels"	    : "out/xception/h5files/IR2flo_late_testlabels.h5",
-  "results"         : "out/xception/results/IR2flo_late_results_imaug.txt",
-  "classifier_path" : "out/xception/models/IR2flo_late_classifier_imaug.pickle",
+  "features_path"   : "out/xception/h5files/IR_flo_late_features_imaug.h5",
+  "labels_path"     : "out/xception/h5files/IR_flo_late_labels_imaug.h5",
+  "test_features"   : "out/xception/h5files/IR_flo_late_testfeatures.h5",
+  "test_labels"	    : "out/xception/h5files/IR_flo_late_testlabels.h5",
+  "results"         : "out/xception/results/IR_flo_late_results_imaug.txt",
+  "classifier_path" : "out/xception/models/IR_flo_late_classifier_imaug.pickle",
   "imaug"           : true,
   "extraction_func" : "three_input_extraction"
 }
