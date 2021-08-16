@@ -1,10 +1,7 @@
-## extract_CNN_features.py
-## A script to extract image features using a deep CNN
-## Written by Daniel Buscombe,
-## Northern Arizona University
-## daniel.buscombe@nau.edu
-
-## Modified by Ryan Smith
+"""
+Extraction of image features using CNNs.
+"""
+## Written by Ryan Smith
 ## University College Dublin
 ## ryan.smith@ucdconnect.ie
 

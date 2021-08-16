@@ -116,9 +116,7 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
     for label in train_labels:
         cur_path = train_path + "/" + label
         paths = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
-        if imaug:
-            paths += glob.glob(cur_path + "/oversample/*.png") + \
-                    glob.glob(cur_path + "/oversample/*.jpg")
+
         count = 1
         for image_path in paths:
             img = image.load_img(image_path, target_size=image_shape)
@@ -133,6 +131,27 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
             labels.append(label)
             print("processed - " + str(count))
             count += 1
+
+        if imaug:
+            oversample = 0
+            while oversample < 2000:
+                for image_path in paths:
+                    if oversample < 2000 and np.random.random(1) < 0.3:
+                        img = image.load_img(image_path, target_size=image_shape)
+                        x = transform(True, image_shape, np.array(img))
+                        # Expects a 4D float array
+                        x = imgs['image'][None].astype('float')
+                        x = preprocess_input(x)
+                        feature = model.predict(x)
+                        # Ensure features are in vector form
+                        flat = feature.flatten()
+                        features.append(flat)
+                        labels.append(label)
+                        print("processed - " + str(count))
+                        count += 1
+                        oversample += 1
+                    elif oversample >= 2000:
+                        break
         print("completed label - " + label)
     return features, labels
 
@@ -203,7 +222,7 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                             img1 = image.load_img(image_path1, target_size=image_shape)
                             img2 = image.load_img(image_path2, target_size=image_shape)
 
-                            imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
+                            imgs = transform(True, image_shape, np.array(img1), np.array(img2))
 
                             x = imgs['image'][None].astype('float')
                             y = imgs['image2'][None].astype('float')
