@@ -40,8 +40,6 @@ if __name__ == '__main__':
     test_labels_path = config["test_labels"]
     results = config["results"]
     classifier_path = config["classifier_path"]
-    cm_path = config["cm_path"]
-    model_path = config["model_path"]
     extraction_func = config["extraction_func"]
 
 #==============================================================
@@ -154,4 +152,4 @@ if __name__ == '__main__':
     tick_marks = np.arange(len(classes))+.5
     plt.xticks(tick_marks, classes, rotation=0,fontsize=20)
     plt.yticks(tick_marks, yclasses, rotation=0, fontsize=20)
-    plt.savefig(f"cm_{config}", bbox_inches='tight')
+    plt.savefig(f"figures/cm/cm_{args.config}", bbox_inches='tight')
