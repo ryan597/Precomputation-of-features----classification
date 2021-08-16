@@ -17,6 +17,9 @@ import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Random seed
+SEED = 46
+
 #==============================================================
 if __name__ == '__main__':
     argv = sys.argv[1:]
@@ -38,16 +41,11 @@ if __name__ == '__main__':
       config = json.load(f)
 
     # config variables
-    test_size     = config["test_size"]
-    seed      = config["seed"]
     features_path   = config["features_path"]
     labels_path   = config["labels_path"]
     results     = config["results"]
-    model_path = config["model_path"]
     train_path    = config["train_path"]
-    num_classes   = config["num_classes"]
     classifier_path = config["classifier_path"]
-    cm_path = config["cm_path"]
 
     # import features and labels
     h5f_data  = h5py.File(features_path, 'r')
@@ -68,7 +66,7 @@ if __name__ == '__main__':
 
     print ("training started...")
     # split the training and testing data
-    (trainData, trainLabels) = shuffle(features, labels, random_state=seed)
+    (trainData, trainLabels) = shuffle(features, labels, random_state=SEED)
     
 
     print ("splitted train and test data...")
@@ -79,10 +77,15 @@ if __name__ == '__main__':
     # use logistic regression as the model
     print ("creating model...")
     #model = LogisticRegression(C=0.5, dual=True, solver='liblinear', random_state=seed, class_weight='balanced', max_iter=100)
-    model = LogisticRegression(C=0.5, random_state=seed, class_weight='balanced', max_iter=1000)
+    model = LogisticRegression(C=0.5, random_state=SEED, class_weight='balanced', max_iter=1000)
     model.fit(trainData, trainLabels)
 
+    # dump classifier to file
+    print ("saving model...")
+    pickle.dump(model, open(classifier_path, 'wb'))
 
+    """
+    # Can check model results on training data
     # use rank-1 and rank-5 predictions
     print ("evaluating model...")
     f = open(results, "w")
@@ -121,12 +124,7 @@ if __name__ == '__main__':
     # write the classification report to file
     f.write("{}\n".format(classification_report(trainLabels, preds)))
     f.close()
-    
-    # dump classifier to file
-    print ("saving model...")
-    pickle.dump(model, open(classifier_path, 'wb'))
 
-    """
     # display the confusion matrix
     print ("confusion matrix")
 
