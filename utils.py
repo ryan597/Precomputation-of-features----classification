@@ -15,8 +15,9 @@ import torchvision.transforms as T
 import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
-from albumentations.pytorch import ToTensorV2
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def load_pretrained(model_name, include_top=False, weights="imagenet"):
     """
@@ -196,6 +197,83 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 img2 = image.load_img(image_path2, target_size=image_shape)
 
                 imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
+
+                x = imgs['image'][None].astype('float')
+                y = imgs['image2'][None].astype('float')
+
+                x = preprocess_input(x)
+                y = preprocess_input(y)
+
+                featx = model.predict(x)
+                featy = model.predict(y)
+
+                features.append(np.array([featx, featy]).flatten())
+                labels.append(label)
+                print ("processed - " + str(count))
+                count += 1
+
+        if imaug == True:
+            oversample = 0
+            while oversample < 2000:
+                for image_path1, image_path2 in zip(file_names, file_names[1:]):
+                    diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
+                    if  diff < 20 and diff > 0:
+                        if oversample < 2000 and np.random.random(1) < 0.3: # random accept or reject this image pair
+                            img1 = image.load_img(image_path1, target_size=image_shape)
+                            img2 = image.load_img(image_path2, target_size=image_shape)
+
+                            imgs = transform(True, image_shape, np.array(img1), np.array(img2))
+
+                            x = imgs['image'][None].astype('float')
+                            y = imgs['image2'][None].astype('float')
+
+                            x = preprocess_input(x)
+                            y = preprocess_input(y)
+
+                            featx = model.predict(x)
+                            featy = model.predict(y)
+
+                            features.append(np.array([featx, featy]).flatten())
+                            labels.append(label)
+                            print ("processed - " + str(count))
+                            count += 1
+                            oversample +=1
+                        elif oversample >= 2000:
+                            break
+
+        print("completed label - " + label)
+    return features, labels
+
+def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
+    from tensorflow.python.keras.preprocessing import image
+    import os.path
+    if model_name == "mobilenet":
+        from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
+    elif model_name == "xception":
+        from tensorflow.python.keras.applications.xception import preprocess_input
+
+    model, image_shape = load_pretrained(model_name)
+
+    features = []
+    labels = []
+
+    # loop over all the labels and images in the folder
+    for label in train_labels:
+        cur_path = train_path + "/" + label
+        path_OF = "data/flow/train/" + label
+        count = 1
+        file_names_IR = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
+        file_names_IR = sorted(file_names_IR)
+        file_names_OF = glob.glob(path_OF + "/*.jpg") + glob.glob(path_OF + "/*.png")
+        file_names_OF = sorted(file_names_OF)
+
+        for image_path_IR in file_names_IR:
+            image_path_OF = image_path_IR[:5] + "flow" + image_path_IR[7:-4] + ".png"
+            if os.path.exists(image_path_OF):
+                img_IR = image.load_img(image_path_IR, target_size=image_shape)
+                img_OF = image.load_img(image_path_OF, target_size=image_shape)
+
+                imgs = transform(imaug, image_shape, np.array(img_IR), np.array(img_OF))
 
                 x = imgs['image'][None].astype('float')
                 y = imgs['image2'][None].astype('float')
