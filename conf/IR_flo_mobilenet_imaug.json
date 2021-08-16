@@ -12,5 +12,5 @@
   "results"         : "out/mobilenet/results/IR_flo_results_imaug.txt",
   "classifier_path" : "out/mobilenet/models/IR_flo_classifier_imaug.pickle",
   "imaug"           : true,
-  "extraction_func" : "two_input_extraction"
+  "extraction_func" : "two_input_IR_FLO"
 }
