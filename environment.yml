@@ -1,0 +1,26 @@
+name: classification
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - h5py
+  - hdf5
+  - keras-applications=1.0.8=py_1
+  - keras-preprocessing=1.1.0=py_0
+  - matplotlib
+  - matplotlib-base
+  - numpy
+  - pandas
+  - pickleshare
+  - pillow
+  - scikit-learn
+  - scipy
+  - seaborn
+  - tensorboard=1.13.1=py37_0
+  - tensorflow=1.13.1=h5ece82f_5
+  - tensorflow-base=1.13.1=py37h5ece82f_5
+  - tensorflow-estimator=1.13.0=py_0
+  - pip:
+    - albumentations
+    - torch
+    - torchvision

@@ -16,7 +16,6 @@ import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
 from albumentations.pytorch import ToTensorV2
-# other imports in respective functions as they are only called once for efficiency
 
 
 def load_pretrained(model_name, include_top=False, weights="imagenet"):
@@ -62,7 +61,7 @@ def load_pretrained(model_name, include_top=False, weights="imagenet"):
 
 def save_list_h5(path, list_to_save):
     """
-    Save the passes list to the path as a H5 datafile
+    Save the passed list to the path as a H5 datafile
 
     Args:
         path = (string) where to save the H5 file (include .h5 extension)
@@ -244,76 +243,6 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
         print("completed label - " + label)
     return features, labels
 
-def three_input_extraction(model_name, train_path, train_labels, imaug=False):
-    """
-    Extract the image features given a folder with image samples using three
-        images as the inputs
-
-    Args:
-        train_path = (string) path to the training folder
-        train_labels = (list) names of the class labels
-        image_size = (tuple) size to resize the images for preprocessing
-        imaug = (bool) to perform image augmentation or not, augmented images are 
-                stored in a subfolder "output"
-
-    Returns:
-        features = (list) vector of image feature vectors
-        labels = (list) vector of image labels
-    """
-    from tensorflow.python.keras.preprocessing import image
-    if model_name == "mobilenet":
-        from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
-    elif model_name == "xception":
-        from tensorflow.python.keras.applications.xception import preprocess_input
-
-    model, image_shape = load_pretrained(model_name)
-
-    features = []
-    labels = []
-
-    # loop over all the labels and images in the folder
-    for label in train_labels:
-        cur_path = train_path + "/" + label
-        count = 1
-        file_names = glob.glob(cur_path + "/*.jpg") + glob.glob(cur_path + "/*.png")
-        if imaug:
-            file_names += glob.glob(cur_path + "/oversample/*.jpg") +\
-                          glob.glob(cur_path + "/oversample/*.png")
-        file_names = sorted(file_names)
-        for image_path1, image_path2 in zip(file_names, file_names[1:]):
-            if int(image_path2[-16:-4]) - int(image_path1[-16:-4]) < 20:
-                try:
-                    img1 = image.load_img(image_path1, target_size=image_shape)
-                    img2 = image.load_img(image_path2, target_size=image_shape)
-                    img3 = image.load_img('data/flow/train/'+label+'/'+image_path1[-16:-4]+'.png',
-                                          target_size=image_shape)
-
-                    imgs = transform(imaug, image_shape, img1, img2, img3)
-
-                    x = imgs[0]
-                    y = imgs[1]
-                    z = imgs[2]
-
-                    x = preprocess_input(x)
-                    y = preprocess_input(y)
-                    z = preprocess_input(z)
-                    # Tensorflow models are channels last
-                    x = np.transpose(x, (2,1,0))[None]
-                    y = np.transpose(y, (2,1,0))[None]
-                    z = np.transpose(z, (2,1,0))[None]
-
-                    featx = model.predict(x)
-                    featy = model.predict(y)
-                    featz = model.predict(z)
-
-                    features.append([featx.flatten(), featy.flatten(), featz.flatten()])
-                    labels.append(label)
-                    print ("processed - " + str(count))
-                    count += 1
-                except:
-                    pass
-    return features, labels
-
 def transform(augment, image_shape, img1, img2=None):
     """
     Apply transformations to input images. Augmentations can also be applied.
@@ -322,19 +251,15 @@ def transform(augment, image_shape, img1, img2=None):
 
     if augment:
         preprocess_transform = A.Compose([
-            #T.ToPILImage(),
             A.Rotate(limit=20, p=0.6),
             A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.8, 1.2)),
             #A.ColorJitter(0.3, 0.2, 0.2, 0.2),
-            #ToTensorV2()
             ],
             additional_targets = additional_targets
         )
     else:
         preprocess_transform = A.Compose([
-            #T.ToPILImage(),
             A.Resize(image_shape[0], image_shape[1]),
-            #ToTensorV2()
             ],
             additional_targets = additional_targets
         )
