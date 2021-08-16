@@ -25,6 +25,7 @@ if __name__ == '__main__':
     # Get command line argument for the config file
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="Name of the config file inside ./conf/")
+    parser.add_argument("-e", "--extract", default="y", help="Run extraction of test images, y/n. Default is y.")
     args = parser.parse_args()
 
     with open(os.getcwd()+os.sep+'conf'+os.sep+args.config+'.json') as f:
@@ -43,31 +44,33 @@ if __name__ == '__main__':
     model_path = config["model_path"]
     extraction_func = config["extraction_func"]
 
-    # encoding labels from train folder
-    test_labels = os.listdir(test_path)
-    le = LabelEncoder()
-    le.fit(test_labels)
+#==============================================================
+    if args.extract != "n":
+        # encoding labels from train folder
+        test_labels = os.listdir(test_path)
+        le = LabelEncoder()
+        le.fit(test_labels)
 
-    # call the extraction function from the utils file using the string from conf
-    features, labels = getattr(utils, extraction_func)(model_name,
-                                                       test_path,
-                                                       test_labels,
-                                                       imaug=False)
+        # call the extraction function from the utils file using the string from conf
+        features, labels = getattr(utils, extraction_func)(model_name,
+                                                        test_path,
+                                                        test_labels,
+                                                        imaug=False)
 
-    # encode the labels using LabelEncoder
-    le = LabelEncoder()
-    le_labels = le.fit_transform(labels)
+        # encode the labels using LabelEncoder
+        le = LabelEncoder()
+        le_labels = le.fit_transform(labels)
 
-    try:
-        os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
-    except:
-        pass
+        try:
+            os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
+        except:
+            pass
 
-    # save features and labels as h5 files
-    utils.save_list_h5(test_features_path, features)
-    utils.save_list_h5(test_labels_path, le_labels)
+        # save features and labels as h5 files
+        utils.save_list_h5(test_features_path, features)
+        utils.save_list_h5(test_labels_path, le_labels)
 
-    print("Extraction finished...\n")
+        print("Extraction finished...\n")
 
 #==============================================================
 
@@ -96,7 +99,7 @@ if __name__ == '__main__':
         predictions = logmodel.predict_proba(np.atleast_2d(feat))[0]
         predictions = np.argsort(predictions)[::-1]
 
-            # rank-1 prediction increment
+        # rank-1 prediction increment
         if lab == predictions[0]:
             rank_1 += 1
         #else:
