@@ -122,7 +122,9 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
         count = 1
         for image_path in paths:
             img = image.load_img(image_path, target_size=image_shape)
-            x = transform(imaug, image_shape, img)
+            x = transform(False, image_shape, np.array(img))
+            # Expects a 4D float array
+            x = imgs['image'][None].astype('float')
             x = preprocess_input(x)
             feature = model.predict(x)
             # Ensure features are in vector form
@@ -172,18 +174,13 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
             # get the image names and compare
             diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
             if  diff < 20 and diff > 0:
-                #try:
                 img1 = image.load_img(image_path1, target_size=image_shape)
                 img2 = image.load_img(image_path2, target_size=image_shape)
 
-                imgs = transform(False, image_shape, np.array(img1), np.array(img2))
-                # Tensorflow expects float
+                imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
+
                 x = imgs['image'][None].astype('float')
                 y = imgs['image2'][None].astype('float')
-
-                # Tensorflow models are channels last
-                #x = np.transpose(x, (2,1,0))[None]
-                #y = np.transpose(y, (2,1,0))[None]
 
                 x = preprocess_input(x)
                 y = preprocess_input(y)
@@ -191,12 +188,10 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 featx = model.predict(x)
                 featy = model.predict(y)
 
-                features.append([featx.flatten(), featy.flatten()])
+                features.append(np.array([featx, featy]).flatten())
                 labels.append(label)
                 print ("processed - " + str(count))
                 count += 1
-                #except:
-                #    pass
 
         if imaug == True:
             oversample = 0
@@ -204,31 +199,31 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                 for image_path1, image_path2 in zip(file_names, file_names[1:]):
                     diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
                     if  diff < 20 and diff > 0:
-                        img1 = image.load_img(image_path1, target_size=image_shape)
-                        img2 = image.load_img(image_path2, target_size=image_shape)
+                        if oversample < 2000 and np.random.random(1) < 0.3: # random accept or reject this image pair
+                            img1 = image.load_img(image_path1, target_size=image_shape)
+                            img2 = image.load_img(image_path2, target_size=image_shape)
 
-                        imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
+                            imgs = transform(imaug, image_shape, np.array(img1), np.array(img2))
 
-                        x = imgs['image'][None].astype('float')
-                        y = imgs['image2'][None].astype('float')
+                            x = imgs['image'][None].astype('float')
+                            y = imgs['image2'][None].astype('float')
 
-                        x = preprocess_input(x)
-                        y = preprocess_input(y)
-                        # Tensorflow models are channels last
-                        #x = np.transpose(x, (2,1,0))[None]
-                        #y = np.transpose(y, (2,1,0))[None]
+                            x = preprocess_input(x)
+                            y = preprocess_input(y)
 
-                        featx = model.predict(x)
-                        featy = model.predict(y)
+                            featx = model.predict(x)
+                            featy = model.predict(y)
 
-                        features.append([featx.flatten(), featy.flatten()])
-                        labels.append(label)
-                        print ("processed - " + str(count))
-                        count += 1
-                        oversample +=1
+                            features.append(np.array([featx, featy]).flatten())
+                            labels.append(label)
+                            print ("processed - " + str(count))
+                            count += 1
+                            oversample +=1
+                        elif oversample >= 2000:
+                            break
 
+        print("completed label - " + label)
     return features, labels
-
 
 def three_input_extraction(model_name, train_path, train_labels, imaug=False):
     """
@@ -299,7 +294,6 @@ def three_input_extraction(model_name, train_path, train_labels, imaug=False):
                 except:
                     pass
     return features, labels
-
 
 def transform(augment, image_shape, img1, img2=None):
     """
