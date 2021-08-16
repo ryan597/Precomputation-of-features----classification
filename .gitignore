@@ -4,3 +4,4 @@ images/**
 notebook_out/**
 
 __pycache__/**
+__pycache__/utils.cpython-37.pyc
