@@ -15,7 +15,6 @@ import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
-import torchvision.transforms as T
 import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
@@ -318,8 +317,8 @@ def transform(augment, image_shape, img1, img2=None):
     if augment:
         preprocess_transform = A.Compose([
             A.Rotate(limit=20, p=0.6),
-            A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.8, 1.2)),
-            #A.ColorJitter(0.3, 0.2, 0.2, 0.2),
+            A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.9, 1.3)),
+            A.RandomBrightnessContrast(p=0.5)
             ],
             additional_targets = additional_targets
         )
