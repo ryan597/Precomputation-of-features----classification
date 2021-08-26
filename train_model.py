@@ -73,7 +73,8 @@ if __name__ == '__main__':
     print ("train data  : {}".format(trainData.shape))
     print ("train labels: {}".format(trainLabels.shape))
 
-
+    # ------------------------------------------------------
+    # Model ------------------------------------------------
     # use logistic regression as the model
     print ("creating model...")
     #model = LogisticRegression(C=0.5, dual=True, solver='liblinear', random_state=seed, class_weight='balanced', max_iter=100)
@@ -84,6 +85,8 @@ if __name__ == '__main__':
     print ("saving model...")
     pickle.dump(model, open(classifier_path, 'wb'))
 
+    # Model ------------------------------------------------
+    # ------------------------------------------------------
     """
     # Can check model results on training data
     # use rank-1 and rank-5 predictions

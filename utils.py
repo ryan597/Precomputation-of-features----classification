@@ -18,6 +18,7 @@ warnings.filterwarnings('ignore')
 import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
+from tensorflow.python.keras.preprocessing import image
 
 def load_pretrained(model_name, include_top=False, weights="imagenet"):
     """
@@ -88,7 +89,6 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
         features = (list) vector of image feature vectors
         labels = (list) vector of image labels
     """
-    from tensorflow.python.keras.preprocessing import image
     if model_name == "mobilenet":
         from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
     elif model_name == "xception":
@@ -116,7 +116,8 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
             flat = feature.flatten()
             features.append(flat)
             labels.append(label)
-            print("processed - " + str(count))
+            if count % 100 == 0:
+                print("processed - " + str(count))
             count += 1
 
         if imaug:
@@ -129,12 +130,16 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
                         # Expects a 4D float array
                         x = img['image'][None].astype('float')
                         x = preprocess_input(x)
+                        #p = Image.from_array(x)
+                        #p.save("oversampled/image_path.png")
+                        
                         feature = model.predict(x)
                         # Ensure features are in vector form
                         flat = feature.flatten()
                         features.append(flat)
                         labels.append(label)
-                        print("processed - " + str(count))
+                        if count % 100 == 0:
+                            print("processed - " + str(count))
                         count += 1
                         oversample += 1
                     elif oversample >= 2000:
@@ -158,7 +163,6 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
         features = (list) vector of image feature vectors
         labels = (list) vector of image labels
     """
-    from tensorflow.python.keras.preprocessing import image
     if model_name == "mobilenet":
         from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
     elif model_name == "xception":
@@ -196,7 +200,8 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
 
                 features.append(np.array([featx, featy]).flatten())
                 labels.append(label)
-                print ("processed - " + str(count))
+                if count % 100 == 0:
+                    print("processed - " + str(count))
                 count += 1
 
         if imaug == True:
@@ -222,7 +227,8 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
 
                             features.append(np.array([featx, featy]).flatten())
                             labels.append(label)
-                            print ("processed - " + str(count))
+                            if count % 100 == 0:
+                                print("processed - " + str(count))
                             count += 1
                             oversample +=1
                         elif oversample >= 2000:
@@ -232,7 +238,6 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
     return features, labels
 
 def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
-    from tensorflow.python.keras.preprocessing import image
     import os.path
     if model_name == "mobilenet":
         from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
@@ -273,7 +278,8 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
 
                 features.append(np.array([featx, featy]).flatten())
                 labels.append(label)
-                print ("processed - " + str(count))
+                if count % 100 == 0:
+                    print("processed - " + str(count))
                 count += 1
 
         if imaug == True:
@@ -298,7 +304,8 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
 
                         features.append(np.array([featx, featy]).flatten())
                         labels.append(label)
-                        print ("processed - " + str(count))
+                        if count % 100 == 0:
+                            print("processed - " + str(count))
                         count += 1
                         oversample +=1
                     
