@@ -1,4 +1,4 @@
-name: classification
+name: precomputation
 channels:
   - conda-forge
   - defaults
