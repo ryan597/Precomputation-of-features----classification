@@ -15,6 +15,8 @@ Repositiory for code to reproduce the results of the pre-print Precomputation of
 - [5. Evaluation](#5-evaluation)
     - [5.1. Evaluating](#51-evaluating)
     - [5.2. Results](#52-results)
+- [6. Scripts](#6-scripts)
+    - [6.1. Seperate Waves](#61-seperate-waves)
 
 ## 1. Environment
 
@@ -22,14 +24,14 @@ Repositiory for code to reproduce the results of the pre-print Precomputation of
 
 ```bash
 conda env create -f environment.yml
-conda activate dynamictexture
+conda activate precomputation
 ```
 
 ## 2. Data
 
 ### 2.1. Sources
 
-Data is available to download from the [IR_Waveclass](https://github.com/dbuscombe-usgs/IR_waveclass) repository on github with the original train/test split. It is also supplied with this repositiory and split using the method described in our respective paper. ~~The bash script is also provided for grouping together waves.  We then hand split the waves into train and test groups to get the desired split ratio.~~
+Data is available to download from the [IR_Waveclass](https://github.com/dbuscombe-usgs/IR_waveclass) repository on github with the original train/test split. It is also supplied with this repositiory and split using the method described in our respective paper. The bash script is also provided for grouping together waves. We then hand split the waves into train and test groups to get the desired split ratio.  **Note: Running scripts/seperate_waves on the original data will not give the exact same data split. Some images were manually moved around to other classes (mislabeled in the original data split). This was found by running seperate_waves on the original split when it becomes apparent that some of the collected waves are only a single image long.  It was also found that some images were unusable.** For information on the included bash scripts see [scripts](#6-scripts)
 
 ### 2.2. Folder Structure
 
@@ -107,6 +109,7 @@ There are config files supplied for two CNNs (Mobilenet_v2 and Xception) for eac
 python extract_CNN_features.py -c CONFIG_FILE
 python train_model.py -c CONFIG_FILE
 ```
+
 The second command will train the model specified in the same config file.
 
 Additionally, all the configs in /conf can be run by running the following command in the command line.
@@ -174,3 +177,35 @@ Results presented in the paper are given below. In the table, the figures in bra
 | SPyNet | ![SPy Xception](figures/cm/cm_SPy_xception.png) | ![SPy Xception imaug](figures/cm/cm_SPy_xception_imaug.png) |
 | IR+IR | ![IR+IR Xception](figures/cm/cm_IR2_xception.png) | ![IR+IR Xception imaug](figures/cm/cm_IR2_xception_imaug.png) |
 | IR+IR | ![IR+OF Xception](figures/cm/cm_IR_flo_xception.png) | ![IR+Flo Xception imaug](figures/cm/cm_IR_flo_xception_imaug.png) |
+
+## 6. Scripts
+
+### 6.1. Seperate Waves
+
+This bash script contains a recursive function to collect all the images of a single wave together.  First, the train images should be combined with the test images (images in train/plunge/ and test/plunge/ should be combined in plunge/ and similar for nonbreaking and spill images). Then call the script with the path as the argument as follows.
+
+```bash
+./scripts/seperate_waves data/IR/plunge
+./scripts/seperate_waves data/IR/spill
+./scripts/seperate_waves data/IR/nonbreaking
+```
+
+This results in a folder structure like:
+
+- data
+    - IR
+        - nonbreaking
+            - wave_1
+            - wave_2
+            - ...
+        - plunge
+            - wave_1
+            - wave_2
+            - ...
+        - spill
+            - wave_1
+            - wave_2
+            - ...
+    - ...
+
+The script will create symbolic links to the images within these wave_* folders.
