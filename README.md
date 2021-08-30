@@ -159,18 +159,18 @@ Results presented in the paper are given below. In the table, the figures in bra
 
 #### **Probability Evolution**
 
-IR | TVL1 | IR+TVL1
-- | - | -
-![IR nonbreaking](<notebook_out/probabilities/IR - nonbreaking.png>) |![Flo nonbreaking](<notebook_out/probabilities/TVL1 Optical flow - nonbreaking.png>) | ![IR and TVL1 nonbreaking](<notebook_out/probabilities/IR and TVL1 Optical flow - nonbreaking.png>)
-![IR plunge](<notebook_out/probabilities/IR - plunge.png>) |![Flo plunge](<notebook_out/probabilities/TVL1 Optical flow - plunge.png>) | ![IR and TVL1 plunge](<notebook_out/probabilities/IR and TVL1 Optical flow - plunge.png>)
-![IR spill](<notebook_out/probabilities/IR - spill.png>) |![Flo spill](<notebook_out/probabilities/TVL1 Optical flow - spill.png>) | ![IR and TVL1 spill](<notebook_out/probabilities/IR and TVL1 Optical flow - spill.png>)
+| IR | TVL1 | IR+TVL1 |
+| - | - | - |
+| ![IR nonbreaking](<notebook_out/probabilities/IR - nonbreaking.png>) |![Flo nonbreaking](<notebook_out/probabilities/TVL1 Optical flow - nonbreaking.png>) | ![IR and TVL1 nonbreaking](<notebook_out/probabilities/IR and TVL1 Optical flow - nonbreaking.png>) |
+| ![IR plunge](<notebook_out/probabilities/IR - plunge.png>) |![Flo plunge](<notebook_out/probabilities/TVL1 Optical flow - plunge.png>) | ![IR and TVL1 plunge](<notebook_out/probabilities/IR and TVL1 Optical flow - plunge.png>) |
+| ![IR spill](<notebook_out/probabilities/IR - spill.png>) |![Flo spill](<notebook_out/probabilities/TVL1 Optical flow - spill.png>) | ![IR and TVL1 spill](<notebook_out/probabilities/IR and TVL1 Optical flow - spill.png>) |
 
 #### **Confusion Maps**
 
-Model | Normal | Augmented
-- | - | -
-IR | ![IR Xception](figures/cm/cm_IR_xception.png) | ![IR Xception imaug](figures/cm/cm_IR_xception_imaug.png)
-TVL1 | ![Flo Xception](figures/cm/cm_Flo_xception.png) | ![Flo Xception imaug](figures/cm/cm_Flo_xception_imaug.png)
-SPyNet | ![SPy Xception](figures/cm/cm_SPy_xception.png) | ![SPy Xception imaug](figures/cm/cm_SPy_xception_imaug.png)
-IR+IR | ![IR+IR Xception](figures/cm/cm_IR2_xception.png) | ![IR+IR Xception imaug](figures/cm/cm_IR2_xception_imaug.png)
-IR+IR | ![IR+OF Xception](figures/cm/cm_IR_flo_xception.png) | ![IR+Flo Xception imaug](figures/cm/cm_IR_flo_xception_imaug.png)
+| Model | Normal | Augmented |
+| - | - | - |
+| IR | ![IR Xception](figures/cm/cm_IR_xception.png) | ![IR Xception imaug](figures/cm/cm_IR_xception_imaug.png) |
+| TVL1 | ![Flo Xception](figures/cm/cm_Flo_xception.png) | ![Flo Xception imaug](figures/cm/cm_Flo_xception_imaug.png) |
+| SPyNet | ![SPy Xception](figures/cm/cm_SPy_xception.png) | ![SPy Xception imaug](figures/cm/cm_SPy_xception_imaug.png) |
+| IR+IR | ![IR+IR Xception](figures/cm/cm_IR2_xception.png) | ![IR+IR Xception imaug](figures/cm/cm_IR2_xception_imaug.png) |
+| IR+IR | ![IR+OF Xception](figures/cm/cm_IR_flo_xception.png) | ![IR+Flo Xception imaug](figures/cm/cm_IR_flo_xception_imaug.png) |
