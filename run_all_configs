@@ -4,5 +4,5 @@ for i in conf/*;
     do config=`basename -s .json $i` 
     python extract_CNN_features.py -c $config
     python train_model.py -c $config
-    python test.py -c $config -e n
+    python test.py -c $config -e y
 done

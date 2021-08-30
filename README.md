@@ -14,7 +14,7 @@ Precomputation of Image Features for the Classification of Dynamic Properties in
 
 ## 1. Environment
 
-### Using [`conda`](https://docs.conda.io/en/latest/):
+### Using [`conda`](https://docs.conda.io/en/latest/)
 
 ```bash
 conda env create -f environment.yml

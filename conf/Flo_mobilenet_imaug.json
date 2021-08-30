@@ -1,0 +1,16 @@
+{
+  "model"           : "mobilenet",
+  "weights"         : "imagenet",
+  "include_top"     : false,
+
+  "train_path"      : "data/flow/train",
+  "test_path"       : "data/flow/test",
+  "features_path"   : "out/mobilenet/h5files/Flofeatures_imaug.h5",
+  "labels_path"     : "out/mobilenet/h5files/Flolabels_imaug.h5",
+  "test_features"   : "out/mobilenet/h5files/Flotestfeatures.h5",
+  "test_labels"	    : "out/mobilenet/h5files/Flotestlabels.h5",
+  "results"         : "out/mobilenet/results/Floresults_imaug.txt",
+  "classifier_path" : "out/mobilenet/models/Floclassifier_imaug.pickle",
+  "imaug"           : false,
+  "extraction_func" : "single_input_extraction"
+}
