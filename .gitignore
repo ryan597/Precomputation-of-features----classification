@@ -1,7 +1,5 @@
 data/**
 out/**
-images/**
-notebook_out/**
 
 .markdownlint.json
 __pycache__/**
