@@ -34,14 +34,37 @@ conda activate dynamictexture
 Data is available to download from the [IR_Waveclass](https://github.com/dbuscombe-usgs/IR_waveclass) repository on github with the original train/test split. It is also supplied with this repositiory and split using the method described in our respective paper. ~~The bash script is also provided for grouping together waves.  We then hand split the waves into train and test groups to get the desired split ratio.~~
 
 ### 2.2. Folder Structure
+<pre>
+<details>
+    <summary>conf : the config files for each model, each comes with the following parameters</summary>
+    - model name of pretrained CNN to be used
+    - weights to be used on the CNN model
+    - include top - to use the fully connected layer on the CNN (set to false)
+    - train path of images for training
+    - test path of images for testing
+    - features path where to save features extracted from train images
+    - lables path where to save labels of train images
+    - test features where to save features of test images
+    - test labels where to save labels of test images
+    - results where to results report
+    - classifier path where to save the classifier model
+    - imaug whether to use image augmentation
+    - extraction func single, two IR or IR and OF image inputs
+</details>
+<details>
+    <summary>data</summary>
+</details>
+<details>
+    <summary>figures</summary>
+</details>
+<details>
+    <summary>notebook out</summary>
+</details>
+<details>
+    <summary>out</summary>
+</details>
+</pre>
 
-- conf
-- data
-- figures
-- notebook_out
-- out
-- extract_CNN_features.py
-- 
 ## 3. Models
 
 ## 4. Training
