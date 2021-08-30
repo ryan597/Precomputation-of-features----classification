@@ -1,6 +1,7 @@
 data/**
 out/**
 
+precomp/**
 .markdownlint.json
 __pycache__/**
 __pycache__/utils.cpython-37.pyc
