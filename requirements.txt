@@ -1,0 +1,12 @@
+h5py
+keras
+keras
+matplotlib
+numpy
+pickleshare
+pillow
+scikit-learn
+scipy
+seaborn
+tensorflow
+albumentations
