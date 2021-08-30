@@ -18,6 +18,8 @@ Repositiory for code to reproduce the results of the pre-print Precomputation of
 - [6. Scripts](#6-scripts)
     - [6.1. Seperate Waves](#61-seperate-waves)
 
+---
+
 ## 1. Environment
 
 Creating a virtual environment to install the dependencies packages is recommended, this can be done with either conda or the python3 venv.
@@ -54,6 +56,8 @@ pip install -r requirements.txt
     - albumentations
 
 </details>
+
+---
 
 ## 2. Data
 
@@ -127,7 +131,11 @@ Data is available to download from the [IR_Waveclass](https://github.com/dbuscom
 
 </details>
 
+---
+
 ## 3. Models
+
+---
 
 ## 4. Training
 
@@ -147,6 +155,8 @@ Additionally, all the configs in /conf can be run by running the following comma
 ```
 
 This will extract the features, train the model and test all the models.
+
+---
 
 ## 5. Evaluation
 
@@ -205,6 +215,8 @@ Results presented in the paper are given below. In the table, the figures in bra
 | SPyNet | ![SPy Xception](figures/cm/cm_SPy_xception.png) | ![SPy Xception imaug](figures/cm/cm_SPy_xception_imaug.png) |
 | IR+IR | ![IR+IR Xception](figures/cm/cm_IR2_xception.png) | ![IR+IR Xception imaug](figures/cm/cm_IR2_xception_imaug.png) |
 | IR+IR | ![IR+OF Xception](figures/cm/cm_IR_flo_xception.png) | ![IR+Flo Xception imaug](figures/cm/cm_IR_flo_xception_imaug.png) |
+
+---
 
 ## 6. Scripts
 
