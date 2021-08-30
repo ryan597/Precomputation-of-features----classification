@@ -20,12 +20,40 @@ Repositiory for code to reproduce the results of the pre-print Precomputation of
 
 ## 1. Environment
 
+Creating a virtual environment to install the dependencies packages is recommended, this can be done with either conda or the python3 venv.
+
 ### Using [`conda`](https://docs.conda.io/en/latest/)
 
 ```bash
 conda env create -f environment.yml
 conda activate precomputation
 ```
+
+### Using [`pip`](https://pypi.org/project/pip/)
+
+```bash
+python3 -m venv precomputation
+source precomputation/bin/activate
+pip install -r requirements.txt
+```
+
+<details>
+    <summary>Package list</summary>
+
+    - h5py
+    - keras
+    - keras
+    - matplotlib
+    - numpy
+    - pickleshare
+    - pillow
+    - scikit-learn
+    - scipy
+    - seaborn
+    - tensorflow
+    - albumentations
+
+</details>
 
 ## 2. Data
 
