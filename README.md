@@ -1,12 +1,10 @@
 # Precomputation of Image Features for the Classification of Dynamic Properties in Waves
 
-Repositiory for code to reproduce the results of the pre-print
-
-[Precomputation of Image Features for the Classification of Dynamic Properties in Waves](#precomputation-of-image-features-for-the-classification-of-dynamic-properties-in-waves)
+Repositiory for code to reproduce the results of the pre-print Precomputation of Image Features for the Classification of Dynamic Properties in Waves
 
 ## Contents
 
-Precomputation of Image Features for the Classification of Dynamic Properties in Waves
+[Precomputation of Image Features for the Classification of Dynamic Properties in Waves](#precomputation-of-image-features-for-the-classification-of-dynamic-properties-in-waves)
 
 - [1. Environment](#1-environment)
 - [2. Data](#2-data)
@@ -103,22 +101,33 @@ Data is available to download from the [IR_Waveclass](https://github.com/dbuscom
 
 ## 4. Training
 
+There are config files supplied for two CNNs (Mobilenet_v2 and Xception) for each of the models (IR, TVL1, SPyNet, IR+IR and IR+TVL1). Other pre-trained CNNs available in Tensorflow can also be used by creating a config file and adding a similar conditional in the utils file for selecting the model.  To train a model, first call the python file for extracting the features using a pre-trained CNN.  This is done by giving the config file name (without ".json") as an argument to the program as below.
+
 ```bash
 python extract_CNN_features.py -c CONFIG_FILE
 python train_model.py -c CONFIG_FILE
 ```
+The second command will train the model specified in the same config file.
+
+Additionally, all the configs in /conf can be run by running the following command in the command line.
 
 ```bash
-run_all_configs
+./run_all_configs
 ```
+
+This will extract the features, train the model and test all the models.
 
 ## 5. Evaluation
 
 ### 5.1. Evaluating
 
+The test python file is used for generating the results figures and evaluating the models.  This is done using the same structure as before and supplying the config file as an argument to -c or --config.
+
 ```bash
 python test.py -c CONFIG_FILE
 ```
+
+If the test features have already been extracted, it is possible to also just run the test and generate the results based on these features by also supplying the -e or --extract with "n".
 
 ```bash
 python test.py -c CONFIG_FILE -e n
