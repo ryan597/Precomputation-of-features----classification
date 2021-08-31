@@ -3,9 +3,7 @@ out/**
 data/images_to_h5.py
 
 data/flow/train/nonbreaking
-data/flow/train/spill
 data/flow/test/nonbreaking
-data/flow/test/spill
 
 data/spyflow/train/nonbreaking
 data/spyflow/train/spill
