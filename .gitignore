@@ -2,8 +2,19 @@ out/**
 
 data/images_to_h5.py
 
-data/flow/**
-data/spyflow/**
+data/flow/train/nonbreaking
+data/flow/train/spill
+data/flow/train/plunge
+data/flow/test/nonbreaking
+data/flow/test/spill
+data/flow/test/plunge
+
+data/spyflow/train/nonbreaking
+data/spyflow/train/spill
+data/spyflow/train/plunge
+data/spyflow/test/nonbreaking
+data/spyflow/test/spill
+data/spyflow/test/plunge
 
 precomp/**
 .markdownlint.json
