@@ -4,7 +4,6 @@ data/IR/train/nonbreaking/**
 data/IR/test/nonbreaking/**
 data/IR/train/spill/**
 data/IR/test/spill/**
-data/IR/train/plunge/**
 
 data/images_to_h5.py
 
