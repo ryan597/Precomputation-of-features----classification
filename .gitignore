@@ -2,8 +2,6 @@ out/**
 
 data/images_to_h5.py
 
-data/flow/train/nonbreaking
-
 data/spyflow/train/nonbreaking
 
 precomp/**
