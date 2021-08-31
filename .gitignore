@@ -7,10 +7,8 @@ data/flow/test/nonbreaking
 
 data/spyflow/train/nonbreaking
 data/spyflow/train/spill
-data/spyflow/train/plunge
 data/spyflow/test/nonbreaking
 data/spyflow/test/spill
-data/spyflow/test/plunge
 
 precomp/**
 .markdownlint.json
