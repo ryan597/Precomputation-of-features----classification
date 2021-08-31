@@ -4,10 +4,8 @@ data/images_to_h5.py
 
 data/flow/train/nonbreaking
 data/flow/train/spill
-data/flow/train/plunge
 data/flow/test/nonbreaking
 data/flow/test/spill
-data/flow/test/plunge
 
 data/spyflow/train/nonbreaking
 data/spyflow/train/spill
