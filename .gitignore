@@ -2,7 +2,6 @@ out/**
 
 data/IR/train/nonbreaking/**
 data/IR/test/nonbreaking/**
-data/IR/train/spill/**
 
 data/images_to_h5.py
 
