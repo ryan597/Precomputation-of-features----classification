@@ -1,7 +1,5 @@
 out/**
 
-data/IR/train/nonbreaking/**
-
 data/images_to_h5.py
 
 data/flow/**
