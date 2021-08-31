@@ -1,6 +1,5 @@
 h5py
 keras
-keras
 matplotlib
 numpy
 pickleshare

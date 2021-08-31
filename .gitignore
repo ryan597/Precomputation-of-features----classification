@@ -1,7 +1,17 @@
-data/**
 out/**
+
+data/IR/train/nonbreaking/**
+data/IR/test/nonbreaking/**
+data/IR/train/spill/**
+data/IR/test/spill/**
+data/IR/train/plunge/**
+data/IR/test/plunge/**
+
+data/flow/**
+data/spyflow/**
 
 precomp/**
 .markdownlint.json
 __pycache__/**
 __pycache__/utils.cpython-37.pyc
+settings.json

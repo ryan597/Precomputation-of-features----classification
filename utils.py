@@ -1,24 +1,23 @@
 """
 Set of useful functions used across extraction and testing files
 """
-## Written by Ryan Smith
-## University College Dublin
-## ryan.smith@ucdconnect.ie
+# Written by Ryan Smith
+# University College Dublin
+# ryan.smith@ucdconnect.ie
 
 import sys
 import glob
-import random
 import h5py
 import numpy as np
+import warnings
+import albumentations as A
 
 # Suppress tensorflow depreciation warnings
-import warnings
 warnings.filterwarnings('ignore')
-
-import albumentations as A
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input
 from tensorflow.python.keras.preprocessing import image
+
 
 def load_pretrained(model_name, include_top=False, weights="imagenet"):
     """
@@ -61,6 +60,7 @@ def load_pretrained(model_name, include_top=False, weights="imagenet"):
     print("base model and model loaded...\n")
     return model, image_shape
 
+
 def save_list_h5(path, list_to_save):
     """
     Save the passed list to the path as a H5 datafile
@@ -72,6 +72,7 @@ def save_list_h5(path, list_to_save):
     hfile = h5py.File(path, 'w')
     hfile.create_dataset('dataset_1', data=np.array(list_to_save))
     hfile.close()
+
 
 def single_input_extraction(model_name, train_path, train_labels, imaug=False):
     """
@@ -147,6 +148,7 @@ def single_input_extraction(model_name, train_path, train_labels, imaug=False):
         print("completed label - " + label)
     return features, labels
 
+
 def two_input_extraction(model_name, train_path, train_labels, imaug=False):
     """
     Extract the image features given a folder with image samples using two
@@ -204,12 +206,12 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                     print("processed - " + str(count))
                 count += 1
 
-        if imaug == True:
+        if imaug:
             oversample = 0
             while oversample < 2000:
                 for image_path1, image_path2 in zip(file_names, file_names[1:]):
                     diff = int(image_path2[-16:-4]) - int(image_path1[-16:-4])
-                    if  diff < 20 and diff > 0:
+                    if diff < 20 and diff > 0:
                         if oversample < 2000 and np.random.random(1) < 0.3: # random accept or reject this image pair
                             img1 = image.load_img(image_path1, target_size=image_shape)
                             img2 = image.load_img(image_path2, target_size=image_shape)
@@ -230,12 +232,13 @@ def two_input_extraction(model_name, train_path, train_labels, imaug=False):
                             if count % 100 == 0:
                                 print("processed - " + str(count))
                             count += 1
-                            oversample +=1
+                            oversample += 1
                         elif oversample >= 2000:
                             break
 
         print("completed label - " + label)
     return features, labels
+
 
 def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
     import os.path
@@ -282,7 +285,7 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
                     print("processed - " + str(count))
                 count += 1
 
-        if imaug == True:
+        if imaug:
             oversample = 0
             while oversample < 2000:
                 for image_path_IR in file_names_IR:
@@ -307,7 +310,7 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
                         if count % 100 == 0:
                             print("processed - " + str(count))
                         count += 1
-                        oversample +=1
+                        oversample += 1
                     
                     elif oversample >= 2000:
                         break
@@ -315,11 +318,12 @@ def two_input_IR_FLO(model_name, train_path, train_labels, imaug=False):
         print("completed label - " + label)
     return features, labels
 
+
 def transform(augment, image_shape, img1, img2=None):
     """
     Apply transformations to input images. Augmentations can also be applied.
     """
-    additional_targets = {"image2":"image"} if type(img2) == np.ndarray else None
+    additional_targets = {"image2": "image"} if type(img2) == np.ndarray else None
 
     if augment:
         preprocess_transform = A.Compose([
@@ -327,13 +331,13 @@ def transform(augment, image_shape, img1, img2=None):
             A.RandomResizedCrop(image_shape[0], image_shape[1], scale=(0.9, 1.3)),
             A.RandomBrightnessContrast(p=0.5)
             ],
-            additional_targets = additional_targets
+            additional_targets=additional_targets
         )
     else:
         preprocess_transform = A.Compose([
             A.Resize(image_shape[0], image_shape[1]),
             ],
-            additional_targets = additional_targets
+            additional_targets=additional_targets
         )
     transformed = preprocess_transform(image=img1, image2=img2)
     return transformed
