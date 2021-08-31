@@ -1,9 +1,6 @@
 out/**
 
 data/images_to_h5.py
-
-data/spyflow/train/nonbreaking
-
 precomp/**
 .markdownlint.json
 __pycache__/**
