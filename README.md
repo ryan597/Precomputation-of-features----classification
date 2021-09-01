@@ -67,7 +67,7 @@ Data is available to download from the [IR_Waveclass](https://github.com/dbuscom
 
 ### 2.2. Folder Structure
 
-After downloading the repository and the data files from [Zenodo]()
+After downloading the repository and the data files from [Zenodo](doi.org/10.5281/zenodo.5361958) the folders will look as below (files ommitted).
 
 <details>
 <summary>conf : contains the config files for each model, each comes with the following parameters</summary>
