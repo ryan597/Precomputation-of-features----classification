@@ -1,4 +1,5 @@
 out/**
+data/**
 
 data/images_to_h5.py
 precomp/**
