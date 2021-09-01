@@ -133,6 +133,13 @@ After downloading the repository and the data files from [Zenodo](doi.org/10.528
 
 </details>
 
+<details>
+<summary>scripts</summary>
+
+- seperate_waves
+
+</details>
+
 ---
 
 ## 3. Models
