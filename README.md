@@ -135,6 +135,14 @@ Data is available to download from the [IR_Waveclass](https://github.com/dbuscom
 
 ## 3. Models
 
+The Xception pre-trained CNN was found to have the best performance on the data set and was used for all feature extractions in the results section.  We then fit a logistic regression model which is saved in the /out folder under the respective CNN model. The classifiers are stored as pickled objects and can be freely loaded with the pickle package. In this experiment we have train 5 classifiers which differ by their inputs, (IR, TV-L1, SPyNet, IR+IR, IR+TV-L1).
+
+- IR : A single infra-red image as the input to the CNN
+- TV-L1 : Two sequential infra-red images are given to the TV-L1 optical flow algorithm. The output flow visualisation then has its features extracted by the CNN
+- SPyNet : The optical flow calculation is now optimised by the CNN SPyNet
+- IR+IR : Two infra-red images have their features extracted and joined before input to the logistic regression model
+- IR+TV-L1 : An infra-red image and the respective flow visualisation from TV-L1 are input to the CNN for feature extraction.
+
 ---
 
 ## 4. Training
@@ -200,6 +208,8 @@ Results presented in the paper are given below. In the table, the figures in bra
 
 #### **Probability Evolution**
 
+By returning the probabilities from the logistic regression model we can track the classification probabilities over the course of each wave. The below figure shows this probability evolution for each classes waves and how the different classifiers compare.
+
 | IR | TVL1 | IR+TVL1 |
 | - | - | - |
 | ![IR nonbreaking](<notebook_out/probabilities/IR - nonbreaking.png>) |![Flo nonbreaking](<notebook_out/probabilities/TVL1 Optical flow - nonbreaking.png>) | ![IR and TVL1 nonbreaking](<notebook_out/probabilities/IR and TVL1 Optical flow - nonbreaking.png>) |
@@ -207,6 +217,8 @@ Results presented in the paper are given below. In the table, the figures in bra
 | ![IR spill](<notebook_out/probabilities/IR - spill.png>) |![Flo spill](<notebook_out/probabilities/TVL1 Optical flow - spill.png>) | ![IR and TVL1 spill](<notebook_out/probabilities/IR and TVL1 Optical flow - spill.png>) |
 
 #### **Confusion Maps**
+
+Confusion maps for all Xception based models are presented below as in the paper.
 
 | Model | Normal | Augmented |
 | - | - | - |
@@ -249,3 +261,33 @@ This results in a folder structure like:
     - ...
 
 The script will create symbolic links to the images within these wave_* folders.
+
+---
+
+## [License](LICENSE)
+
+<details>
+<summary>MIT License</summary>
+
+Copyright (c) 2021 Ryan Smith
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</details>
+
+---
