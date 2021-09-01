@@ -1,0 +1,12 @@
+Accuracy:  90.36666666666666
+Brier score:  0.1474786209275793
+              precision    recall  f1-score   support
+
+           0       0.96      0.93      0.95      2260
+           1       0.30      0.47      0.37        40
+           2       0.79      0.83      0.81       700
+
+    accuracy                           0.90      3000
+   macro avg       0.68      0.75      0.71      3000
+weighted avg       0.91      0.90      0.91      3000
+
