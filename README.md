@@ -225,7 +225,7 @@ By returning the probabilities from the logistic regression model we can track t
 | ![IR plunge](<notebook_out/probabilities/IR - plunge.png>) |![Flo plunge](<notebook_out/probabilities/TVL1 Optical flow - plunge.png>) | ![IR and TVL1 plunge](<notebook_out/probabilities/IR and TVL1 Optical flow - plunge.png>) |
 | ![IR spill](<notebook_out/probabilities/IR - spill.png>) |![Flo spill](<notebook_out/probabilities/TVL1 Optical flow - spill.png>) | ![IR and TVL1 spill](<notebook_out/probabilities/IR and TVL1 Optical flow - spill.png>) |
 
-[prob legend](<notebook_out/probabilities/legend.png>)
+![prob legend](<notebook_out/probabilities/legend.png>)
 
 #### **Confusion Maps**
 
