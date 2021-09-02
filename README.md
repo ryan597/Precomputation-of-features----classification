@@ -61,13 +61,15 @@ pip install -r requirements.txt
 
 ## 2. Data
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5361958.svg)](https://doi.org/10.5281/zenodo.5361958)
+
 ### 2.1. Sources
 
 Data is available to download from the [IR_Waveclass](https://github.com/dbuscombe-usgs/IR_waveclass) repository on github with the original train/test split. It is also supplied at [Zenodo](doi.org/10.5281/zenodo.5361958) using the data split described in our respective paper.  The extracted features are also available in the /out folder at the Zenodo link. A bash script is also provided for grouping together waves. We then hand split the waves into train and test groups to get the desired split ratio.  **Note: Running scripts/seperate_waves on the original data will not give the exact same data split. Some images were manually moved around to other classes (mislabeled in the original data split). This was found by running seperate_waves on the original split when it becomes apparent that some of the collected waves are only a single image long.  It was also found that some images were unusable.** For information on the included bash scripts see [scripts](#6-scripts)
 
 ### 2.2. Folder Structure
 
-After downloading the repository and the data files from [Zenodo](doi.org/10.5281/zenodo.5361958) the folders will look as below (files ommitted).
+After downloading the repository and the data files from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5361958.svg)](https://doi.org/10.5281/zenodo.5361958) the folders will look as below (files ommitted).
 
 <details>
 <summary>conf : contains the config files for each model, each comes with the following parameters</summary>
