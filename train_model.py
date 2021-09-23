@@ -1,94 +1,108 @@
-## train_test_model.py 
-## A script to train logistic reg. models for multi-class predictions from CNN extracted features
-## Written by Daniel Buscombe,
-## Northern Arizona University
-## daniel.buscombe@nau.edu
+###############################################################################
 
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix
-from sklearn.utils import shuffle
+# Written by Ryan Smith
+# ryan.smith@ucdconnect.ie
+# github.com/ryan597/Precomputation-of-features--classification
+
+###############################################################################
+
 import numpy as np
 import h5py
-import os, sys, getopt
+import os
+import sys
+import getopt
 import json
 import pickle
-import seaborn as sns
-import matplotlib.pyplot as plt
 
+from sklearn.utils import shuffle
+from sklearn.linear_model import LogisticRegression
 # Random seed
 SEED = 46
 
-#==============================================================
+###############################################################################
+
 if __name__ == '__main__':
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv,"h:c:")
+        opts, args = getopt.getopt(argv, "h:c:")
     except getopt.GetoptError:
         print('python train_test_model.py -c conf_file')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print('Example usage: python extract_features_imaug.py -c conf_mobilenet')
+            print('Example usage: python extract_features_imaug.py ' +
+                  '-c conf_mobilenet')
             sys.exit()
         elif opt in ("-c"):
             configfile = arg
 
     # load the user configs
-    with open(os.getcwd()+os.sep+'conf'+os.sep+configfile+'.json') as f:    
-      config = json.load(f)
+    with open(os.getcwd()+os.sep+'conf'+os.sep+configfile+'.json') as f:
+        config = json.load(f)
 
     # config variables
-    features_path   = config["features_path"]
-    labels_path   = config["labels_path"]
-    results     = config["results"]
-    train_path    = config["train_path"]
+    features_path = config["features_path"]
+    labels_path = config["labels_path"]
+    results = config["results"]
+    train_path = config["train_path"]
     classifier_path = config["classifier_path"]
 
     # import features and labels
-    h5f_data  = h5py.File(features_path, 'r')
+    h5f_data = h5py.File(features_path, 'r')
     h5f_label = h5py.File(labels_path, 'r')
 
     features_string = h5f_data['dataset_1']
-    labels_string   = h5f_label['dataset_1']
+    labels_string = h5f_label['dataset_1']
 
     features = np.array(features_string)
-    labels   = np.array(labels_string)
+    labels = np.array(labels_string)
 
     h5f_data.close()
     h5f_label.close()
 
     # verify the shape of features and labels
-    print ("features shape: {}".format(features.shape))
-    print ("labels shape: {}".format(labels.shape))
+    print("features shape: {}".format(features.shape))
+    print("labels shape: {}".format(labels.shape))
 
-    print ("training started...")
+    print("training started...")
     # split the training and testing data
     (trainData, trainLabels) = shuffle(features, labels, random_state=SEED)
-    
 
-    print ("splitted train and test data...")
-    print ("train data  : {}".format(trainData.shape))
-    print ("train labels: {}".format(trainLabels.shape))
+    print("splitted train and test data...")
+    print("train data  : {}".format(trainData.shape))
+    print("train labels: {}".format(trainLabels.shape))
 
     # ------------------------------------------------------
     # Model ------------------------------------------------
     # use logistic regression as the model
-    print ("creating model...")
-    #model = LogisticRegression(C=0.5, dual=True, solver='liblinear', random_state=seed, class_weight='balanced', max_iter=100)
-    model = LogisticRegression(C=0.5, random_state=SEED, class_weight='balanced', max_iter=1000)
+    print("creating model...")
+    # model = LogisticRegression(C=0.5,
+    #                            dual=True,
+    #                            solver='liblinear',
+    #                            random_state=seed,
+    #                            class_weight='balanced',
+    #                            max_iter=100)
+    model = LogisticRegression(C=0.5, random_state=SEED,
+                               class_weight='balanced', max_iter=1000)
     model.fit(trainData, trainLabels)
 
     # dump classifier to file
-    print ("saving model...")
+    print("saving model...")
     pickle.dump(model, open(classifier_path, 'wb'))
 
     # Model ------------------------------------------------
     # ------------------------------------------------------
     """
     # Can check model results on training data
+
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    from sklearn.metrics import classification_report
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import confusion_matrix
+
     # use rank-1 and rank-5 predictions
     print ("evaluating model...")
     f = open(results, "w")
@@ -142,7 +156,7 @@ if __name__ == '__main__':
 
     sns.heatmap(cm,
                 annot=True,
-                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True)) 
+                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True))
 
     tick_marks = np.arange(len(labels))+.5
     plt.xticks(tick_marks, labels, rotation=45,fontsize=5)
