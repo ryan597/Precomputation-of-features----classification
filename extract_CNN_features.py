@@ -1,9 +1,13 @@
 """
 Extraction of image features using CNNs.
 """
-## Written by Ryan Smith
-## University College Dublin
-## ryan.smith@ucdconnect.ie
+###############################################################################
+
+# Written by Ryan Smith
+# ryan.smith@ucdconnect.ie
+# github.com/ryan597/Precomputation-of-features--classification
+
+###############################################################################
 
 import os
 import json
@@ -13,11 +17,13 @@ from sklearn.preprocessing import LabelEncoder
 
 import utils
 
-#==============================================================
+###############################################################################
+
 if __name__ == '__main__':
     # Get command line argument for the config file
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--config", help="Name of the config file inside ./conf/")
+    parser.add_argument("-c", "--config",
+                        help="Name of the config file inside ./conf/")
     args = parser.parse_args()
 
     with open(os.getcwd()+os.sep+'conf'+os.sep+args.config+'.json') as f:
@@ -39,7 +45,7 @@ if __name__ == '__main__':
     le = LabelEncoder()
     le.fit(train_labels)
 
-    # call the extraction function from the utils file using the string from conf
+    # call the extraction function from the utils file using the conf
     features, labels = getattr(utils, extraction_func)(model_name,
                                                        train_path,
                                                        train_labels,
@@ -51,7 +57,7 @@ if __name__ == '__main__':
 
     try:
         os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
-    except:
+    except Exception:
         pass
 
     # save features and labels as h5 files
