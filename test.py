@@ -1,6 +1,10 @@
-## Written by Ryan Smith
-## University College Dublin
-## ryan.smith@ucdconnect.ie
+###############################################################################
+
+# Written by Ryan Smith
+# ryan.smith@ucdconnect.ie
+# github.com/ryan597/Precomputation-of-features--classification
+
+###############################################################################
 
 import os
 import json
@@ -19,13 +23,15 @@ from sklearn.metrics import roc_auc_score
 
 import utils
 
-#==============================================================
+###############################################################################
 
 if __name__ == '__main__':
     # Get command line argument for the config file
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--config", help="Name of the config file inside ./conf/")
-    parser.add_argument("-e", "--extract", default="y", help="Run extraction of test images, y/n. Default is y.")
+    parser.add_argument("-c", "--config",
+                        help="Name of the config file inside ./conf/")
+    parser.add_argument("-e", "--extract", default="y",
+                        help="Run extraction of test images, y/n.")
     args = parser.parse_args()
 
     with open(os.getcwd()+os.sep+'conf'+os.sep+args.config+'.json') as f:
@@ -42,18 +48,19 @@ if __name__ == '__main__':
     classifier_path = config["classifier_path"]
     extraction_func = config["extraction_func"]
 
-#==============================================================
+###############################################################################
+
     if args.extract != "n":
         # encoding labels from train folder
         test_labels = os.listdir(test_path)
         le = LabelEncoder()
         le.fit(test_labels)
 
-        # call the extraction function from the utils file using the string from conf
+        # call the extraction function from the utils file using conf
         features, labels = getattr(utils, extraction_func)(model_name,
-                                                        test_path,
-                                                        test_labels,
-                                                        imaug=False)
+                                                           test_path,
+                                                           test_labels,
+                                                           imaug=False)
 
         # encode the labels using LabelEncoder
         le = LabelEncoder()
@@ -61,7 +68,7 @@ if __name__ == '__main__':
 
         try:
             os.mkdir(os.getcwd()+os.sep+'out'+os.sep+model_name)
-        except:
+        except Exception:
             pass
 
         # save features and labels as h5 files
@@ -70,17 +77,17 @@ if __name__ == '__main__':
 
         print("Extraction finished...\n")
 
-#==============================================================
+###############################################################################
 
     # import features and labels
-    h5f_data  = h5py.File(test_features_path, 'r')
+    h5f_data = h5py.File(test_features_path, 'r')
     h5f_label = h5py.File(test_labels_path, 'r')
 
     features_string = h5f_data['dataset_1']
-    labels_string   = h5f_label['dataset_1']
+    labels_string = h5f_label['dataset_1']
 
     features = np.array(features_string)
-    labels   = np.array(labels_string)
+    labels = np.array(labels_string)
 
     h5f_data.close()
     h5f_label.close()
@@ -100,16 +107,16 @@ if __name__ == '__main__':
         # rank-1 prediction increment
         if lab == predictions[0]:
             rank_1 += 1
-        #else:
-        #	print("missclassified \t {}")
-        #	print("True : {lab}\t Predicted : {predictions[0]}")
+        # else:
+        #   print("missclassified \t {}")
+        #   print("True : {lab}\t Predicted : {predictions[0]}")
     rank_1 = (rank_1 / float(len(labels))) * 100
     print(f"\nrank_1 accuracy: {rank_1}")
 
     preds = logmodel.predict(features)
     print(classification_report(labels, preds))
 
-    ##############################################################################
+    ###########################################################################
 
     # Brier score
     pred_prob = logmodel.predict_proba(features)
@@ -118,7 +125,6 @@ if __name__ == '__main__':
         one_hot_labels[i, value] = 1
     bs = np.mean(np.sum((pred_prob - one_hot_labels)**2, axis=1))
     print(f"Brier Score: {bs}")
-
 
     f = open(results, "w")
     f.write("Accuracy:  {}\n".format(rank_1))
@@ -131,13 +137,12 @@ if __name__ == '__main__':
     auc_ovo = roc_auc_score(labels, pred_prob, multi_class='ovo')
     print("AUC ovo\t", auc_ovo)
 
-
     # display the confusion matrix
-    print ("confusion matrix")
+    print("confusion matrix")
 
     # get the list of test lables
     classes = sorted(list(os.listdir(test_path)))
-    classes =[t for t in classes if not t.endswith('csv')]
+    classes = [t for t in classes if not t.endswith('csv')]
     yclasses = ['true '+t for t in classes if not t.endswith('csv')]
 
     # plot the confusion matrix
@@ -147,9 +152,10 @@ if __name__ == '__main__':
     sns.set(font_scale=2)
     sns.heatmap(cm,
                 annot=True,
-                cmap = sns.cubehelix_palette(dark=0, light=1, as_cmap=True), cbar=False)
+                cmap=sns.cubehelix_palette(dark=0, light=1, as_cmap=True),
+                cbar=False)
 
     tick_marks = np.arange(len(classes))+.5
-    plt.xticks(tick_marks, classes, rotation=0,fontsize=20)
+    plt.xticks(tick_marks, classes, rotation=0, fontsize=20)
     plt.yticks(tick_marks, yclasses, rotation=0, fontsize=20)
     plt.savefig(f"figures/cm/cm_{args.config}", bbox_inches='tight')
