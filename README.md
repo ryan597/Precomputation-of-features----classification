@@ -1,10 +1,10 @@
 # Precomputation of Image Features for the Classification of Dynamic Properties in Waves
 
-Repositiory for code to reproduce the results of the pre-print Precomputation of Image Features for the Classification of Dynamic Properties in Waves
+Repositiory for code to reproduce the results of the article Precomputation of Image Features for the Classification of Dynamic Properties in Waves published in the European Journal of Remote Sensing, vol. 56, 2023.
 
 ## Contents
 
-[Precomputation of Image Features for the Classification of Dynamic Properties in Waves](#precomputation-of-image-features-for-the-classification-of-dynamic-properties-in-waves)
+[Precomputation of Image Features for the Classification of Dynamic Properties in Waves](https://doi.org/10.1080/22797254.2022.2163707)
 
 - [1. Environment](#1-environment)
 - [2. Data](#2-data)
